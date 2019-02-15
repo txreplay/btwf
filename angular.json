@@ -3,7 +3,7 @@
   "version": 1,
   "newProjectRoot": "projects",
   "projects": {
-    "blindTest": {
+    "btwf": {
       "root": "",
       "sourceRoot": "src",
       "projectType": "application",
@@ -13,7 +13,7 @@
         "build": {
           "builder": "@angular-devkit/build-angular:browser",
           "options": {
-            "outputPath": "dist/blindTest",
+            "outputPath": "dist/btwf",
             "index": "src/index.html",
             "main": "src/main.ts",
             "polyfills": "src/polyfills.ts",
@@ -58,18 +58,18 @@
         "serve": {
           "builder": "@angular-devkit/build-angular:dev-server",
           "options": {
-            "browserTarget": "blindTest:build"
+            "browserTarget": "btwf:build"
           },
           "configurations": {
             "production": {
-              "browserTarget": "blindTest:build:production"
+              "browserTarget": "btwf:build:production"
             }
           }
         },
         "extract-i18n": {
           "builder": "@angular-devkit/build-angular:extract-i18n",
           "options": {
-            "browserTarget": "blindTest:build"
+            "browserTarget": "btwf:build"
           }
         },
         "test": {
@@ -103,7 +103,7 @@
         }
       }
     },
-    "blindTest-e2e": {
+    "btwf-e2e": {
       "root": "e2e/",
       "projectType": "application",
       "prefix": "",
@@ -112,11 +112,11 @@
           "builder": "@angular-devkit/build-angular:protractor",
           "options": {
             "protractorConfig": "e2e/protractor.conf.js",
-            "devServerTarget": "blindTest:serve"
+            "devServerTarget": "btwf:serve"
           },
           "configurations": {
             "production": {
-              "devServerTarget": "blindTest:serve:production"
+              "devServerTarget": "btwf:serve:production"
             }
           }
         },
@@ -132,5 +132,5 @@
       }
     }
   },
-  "defaultProject": "blindTest"
+  "defaultProject": "btwf"
 }
