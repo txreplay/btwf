@@ -2,11 +2,14 @@
   <h2>Créer une partie</h2>
 
   <form [formGroup]="form" (ngSubmit)="onSubmitCreate()">
-    <label>Type de jeu: </label>
-    <mat-radio-group required formControlName="type">
-      <mat-radio-button value="solo">Chacun pour soi</mat-radio-button>
-      <mat-radio-button value="team">En équipe</mat-radio-button>
-    </mat-radio-group>
+    <!--<label>Type de jeu: </label>-->
+    <!--<mat-radio-group required formControlName="type">-->
+      <!--<mat-radio-button value="solo">Chacun pour soi</mat-radio-button>-->
+      <!--<mat-radio-button value="team">En équipe</mat-radio-button>-->
+    <!--</mat-radio-group>-->
+
+    <mat-label>Votre pseudo: </mat-label>
+    <input matInput type="text" formControlName="pseudo">
 
     <div class="form-group">
       <button mat-raised-button color="primary" type="submit">Créer</button>

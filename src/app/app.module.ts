@@ -9,6 +9,8 @@ import { HeaderComponent } from './layout/header/header.component';
 import {AppRoutes} from './app.routing';
 import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
 import {MaterialModule} from './material-module';
+import { ServiceWorkerModule } from '@angular/service-worker';
+import { environment } from '../environments/environment';
 
 @NgModule({
   declarations: [
@@ -21,6 +23,7 @@ import {MaterialModule} from './material-module';
     MaterialModule,
     RouterModule.forRoot(AppRoutes),
     BrowserAnimationsModule,
+    ServiceWorkerModule.register('ngsw-worker.js', { enabled: environment.production }),
   ],
   providers: [],
   bootstrap: [AppComponent]

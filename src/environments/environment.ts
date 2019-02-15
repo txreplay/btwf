@@ -3,7 +3,15 @@
 // The list of file replacements can be found in `angular.json`.
 
 export const environment = {
-  production: false
+  production: false,
+  firebase: {
+    apiKey: 'AIzaSyBHp6JEbfCsvybVuIBeD3ll0yLK-8NQFjQ',
+    authDomain: 'btwf-e8cad.firebaseapp.com',
+    databaseURL: 'https://btwf-e8cad.firebaseio.com',
+    projectId: 'btwf-e8cad',
+    storageBucket: 'btwf-e8cad.appspot.com',
+    messagingSenderId: '955923144647'
+  }
 };
 
 /*
