@@ -17,7 +17,10 @@ export const AppRoutes: Routes = [{
     loadChildren: './create/create.module#CreateModule',
   }, {
     path: 'join',
-    loadChildren: './join/join.module#JoinModule',
+    loadChildren: './join/join.module#LayoutModule',
+  }, {
+    path: 'join/:id',
+    loadChildren: './join/join.module#LayoutModule',
   }]
 }, {
   path: '**',

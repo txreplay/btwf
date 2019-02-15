@@ -7,6 +7,8 @@ import { LayoutComponent } from './layout/layout.component';
 import { HeaderComponent } from './layout/header/header.component';
 
 import {AppRoutes} from './app.routing';
+import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
+import {MaterialModule} from './material-module';
 
 @NgModule({
   declarations: [
@@ -16,7 +18,9 @@ import {AppRoutes} from './app.routing';
   ],
   imports: [
     BrowserModule,
+    MaterialModule,
     RouterModule.forRoot(AppRoutes),
+    BrowserAnimationsModule,
   ],
   providers: [],
   bootstrap: [AppComponent]

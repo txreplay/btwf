@@ -3,8 +3,8 @@ import { RouterModule } from '@angular/router';
 import { CommonModule } from '@angular/common';
 import {FormsModule, ReactiveFormsModule} from '@angular/forms';
 
-import { JoinRoutes } from './join.routing';
-import { JoinComponent } from './join.component';
+import { LayoutRoutes } from './layout.routing';
+import { LayoutComponent } from './layout.component';
 import {MaterialModule} from '../material-module';
 
 @NgModule({
@@ -13,11 +13,11 @@ import {MaterialModule} from '../material-module';
     FormsModule,
     ReactiveFormsModule,
     MaterialModule,
-    RouterModule.forChild(JoinRoutes),
+    RouterModule.forChild(LayoutRoutes),
   ],
-  declarations: [ JoinComponent ]
+  declarations: [ LayoutComponent ]
 })
 
-export class JoinModule {
+export class LayoutModule {
 
 }

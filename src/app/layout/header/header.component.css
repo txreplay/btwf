@@ -1,0 +1,11 @@
+header {
+  text-align: center;
+}
+
+button.goBack.hide {
+  display: none !important;
+}
+
+.goBack {
+  font-size: 2em;
+}

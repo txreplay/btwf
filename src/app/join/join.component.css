@@ -1,0 +1,14 @@
+section.join {
+  text-align: center;
+}
+
+form {
+  display: flex;
+  flex-direction: column;
+  height: 100%;
+  align-items: center;
+
+  margin: 20px 0;
+
+  text-align: center;
+}

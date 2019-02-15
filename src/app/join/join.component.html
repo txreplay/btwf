@@ -1,3 +1,18 @@
-<p>
-  join works!
-</p>
+<section class="join">
+  <h2>Rejoindre une partie</h2>
+
+  <div *ngIf="!roomCode">
+    <form [formGroup]="form" (ngSubmit)="onSubmitJoin()">
+      <mat-label>Code du salon: </mat-label>
+      <input matInput type="text" formControlName="roomCode">
+
+      <div class="form-group">
+        <button mat-raised-button color="primary" type="submit">Rejoindre</button>
+      </div>
+    </form>
+  </div>
+
+  <div *ngIf="roomCode">
+    Salon : {{ roomCode }}
+  </div>
+</section>
