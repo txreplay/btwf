@@ -1,7 +1,9 @@
 import { Component, OnInit } from '@angular/core';
-import {FormBuilder, FormControl, FormGroup, Validators} from '@angular/forms';
+import {FormBuilder, FormControl, FormGroup} from '@angular/forms';
 import {Router} from '@angular/router';
 import { AngularFirestore, AngularFirestoreCollection } from '@angular/fire/firestore';
+import {NgForage} from 'ngforage';
+
 
 import {RoomModel} from '../../models/room.model';
 import {map} from 'rxjs/operators';
@@ -10,7 +12,8 @@ import {Observable} from 'rxjs';
 @Component({
   selector: 'app-create',
   templateUrl: './create.component.html',
-  styleUrls: ['./create.component.css']
+  styleUrls: ['./create.component.css'],
+  providers: [NgForage]
 })
 export class CreateComponent implements OnInit {
   public form: FormGroup;
@@ -19,7 +22,7 @@ export class CreateComponent implements OnInit {
   private $roomsCollection: AngularFirestoreCollection<any>;
 
 
-  constructor(private fb: FormBuilder, private router: Router, private afs: AngularFirestore) { }
+  constructor(private fb: FormBuilder, private router: Router, private afs: AngularFirestore, private readonly ngf: NgForage) { }
 
   ngOnInit() {
     this.form = this.fb.group( {
@@ -44,25 +47,28 @@ export class CreateComponent implements OnInit {
     );
   }
 
-  createRoom(type, name) {
+  async createRoom(type, name) {
     const id = this.afs.createId();
     const room: any = {
       type,
       admin: name,
-      code: 'SCXP',
+      code: 'XPOVX',
       players: [name]
     };
-    this.$roomsCollection.doc(id).set(room);
+    await this.$roomsCollection.doc(id).set(room);
   }
 
-  onSubmitCreate() {
+  async onSubmitCreate() {
     const formValue = this.form.value;
     formValue.type = 'solo';
 
     if (formValue.type) {
-      this.createRoom(formValue.type, formValue.pseudo);
+      await this.createRoom(formValue.type, formValue.pseudo);
 
-      this.router.navigate(['join', 'OPJS']);
+      await this.ngf.setItem('pseudo', formValue.pseudo);
+      await this.ngf.setItem('admin', true);
+
+      await this.router.navigate(['join', 'XPOVX']);
     }
   }
 }

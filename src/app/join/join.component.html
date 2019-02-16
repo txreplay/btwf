@@ -21,6 +21,14 @@
       </ul>
     </div>
 
+    <div *ngIf="!isAdmin">
+      En attente d'autres joueurs..
+    </div>
+
+    <div *ngIf="isAdmin">
+      <button mat-raised-button color="primary" (click)="startGame()">Commencer le jeu</button>
+    </div>
+
     <div *ngIf="!pseudoSubmitted">
       <h3>Rejoindre ce salon :</h3>
 

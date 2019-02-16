@@ -138,5 +138,10 @@
       }
     }
   },
-  "defaultProject": "btwf"
+  "defaultProject": "btwf",
+  "schematics": {
+    "@schematics/angular:component": {
+      "styleext": "scss"
+    }
+  }
 }

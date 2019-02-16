@@ -6,11 +6,13 @@ import {Observable} from 'rxjs';
 import { map } from 'rxjs/operators';
 
 import {RoomModel} from '../../models/room.model';
+import {NgForage} from 'ngforage';
 
 @Component({
   selector: 'app-join',
   templateUrl: './join.component.html',
-  styleUrls: ['./join.component.css']
+  styleUrls: ['./join.component.css'],
+  providers: [NgForage]
 })
 export class JoinComponent implements OnInit {
   public formCode: FormGroup;
@@ -22,11 +24,12 @@ export class JoinComponent implements OnInit {
   private room: any;
   private roomCode: string;
   private pseudoSubmitted: boolean;
+  private isAdmin: boolean|null;
 
-  constructor(private acRoute: ActivatedRoute, private fb: FormBuilder, private afs: AngularFirestore) {
+  constructor(private acRoute: ActivatedRoute, private fb: FormBuilder, private afs: AngularFirestore, private readonly ngf: NgForage) {
   }
 
-  ngOnInit() {
+  async ngOnInit() {
     this.acRoute.params.subscribe((params) => {
       if (params.id) {
         this.roomCode = params.id;
@@ -41,6 +44,11 @@ export class JoinComponent implements OnInit {
     this.formPseudo = this.fb.group( {
       pseudo: new FormControl('')
     });
+
+    const pseudo = await this.ngf.getItem('pseudo');
+    this.pseudoSubmitted = !!(pseudo);
+
+    this.isAdmin  = await this.ngf.getItem('admin');
   }
 
   onSubmitCode() {
@@ -57,6 +65,7 @@ export class JoinComponent implements OnInit {
 
     this.$room = this.$roomCollection.snapshotChanges().pipe(
       map(actions => actions.map(a => {
+        console.log('aaa');
         const data = a.payload.doc.data();
         const id = a.payload.doc.id;
         this.room = {id, ...data};
@@ -85,5 +94,9 @@ export class JoinComponent implements OnInit {
         });
       });
     }
+  }
+
+  startGame() {
+    console.log('start');
   }
 }

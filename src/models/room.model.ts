@@ -1,7 +1,9 @@
-export interface RoomModel {
-  code: string;
+export interface Room {
+  id?: string;
+  name: string;
   admin: string;
-  type: string;
-  teams?: Array<string>;
-  players?: Array<string>;
+  players: Array<string>;
+  status: string;
+  createdAt: Date;
+  updatedAt: Date;
 }

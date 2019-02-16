@@ -1,0 +1,55 @@
+<section class="choice" *ngIf="!action">
+  <button mat-raised-button color="primary" (click)="setAction('create')">Créer une partie</button>
+  <button mat-raised-button color="warn" (click)="setAction('join')">Rejoindre une partie</button>
+</section>
+
+<section class="cancel" *ngIf="action == 'create' || action == 'join'">
+  <button mat-raised-button color="secondary" (click)="cancelAction()">Retour</button>
+</section>
+
+<section class="createRoom" *ngIf="action == 'create' && !$room">
+  <form [formGroup]="formCreateRoom" (ngSubmit)="onSubmitCreateRoom()">
+    <mat-label>Votre pseudo: </mat-label>
+    <input matInput type="text" [formControl]="formCreateRoom.controls['username']">
+
+    <div class="form-group">
+      <button mat-raised-button color="primary" [disabled]="!formCreateRoom.valid" type="submit">Créer</button>
+    </div>
+  </form>
+</section>
+
+<section class="currRoom" *ngIf="$room">
+  <div *ngFor="let room of $room | async">
+    <h3>Salon : {{ room.name }}</h3>
+    <p>Joueurs connectés :</p>
+    <p *ngFor="let player of room.players"> -> {{ player }}</p>
+  </div>
+
+  <!--TODO: If admin start the game-->
+  <!--TODO: Else waiting message -->
+</section>
+
+<section class="joinRoom" *ngIf="action == 'join'">
+  <!-- GET ROOM -->
+  <form [formGroup]="formGetRoom" (ngSubmit)="onSubmitGetRoom()" *ngIf="!$room">
+    <mat-label>Nom du salon: </mat-label>
+    <input matInput type="text" [formControl]="formGetRoom.controls['roomName']">
+
+    <div class="form-group">
+      <button mat-raised-button color="primary" [disabled]="!formGetRoom.valid" type="submit">Rejoindre</button>
+    </div>
+  </form>
+
+  <!-- JOIN ROOM -->
+  <div *ngIf="$room && !user">
+    <form [formGroup]="formJoinRoom" (ngSubmit)="onSubmitJoinRoom()">
+      <mat-label>Votre pseudo: </mat-label>
+      <input matInput type="text" [formControl]="formJoinRoom.controls['username']">
+
+      <div class="form-group">
+        <button mat-raised-button color="primary" [disabled]="!formJoinRoom.valid" type="submit">Rejoindre</button>
+      </div>
+    </form>
+  </div>
+
+</section>
