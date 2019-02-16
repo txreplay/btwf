@@ -7,14 +7,15 @@ import {NgForage} from 'ngforage';
 import {Observable} from 'rxjs';
 import { map } from 'rxjs/operators';
 
-import {Room, Room, RoomModel} from '../../models/room.model';
+import {Room, Room} from '../../models/room.model';
 import {User} from '../../models/user.model';
+import {AuthService} from '../services/auth.service';
 
 @Component({
   selector: 'app-game',
   templateUrl: './game.component.html',
   styleUrls: ['./game.component.scss'],
-  providers: [NgForage]
+  providers: [NgForage, AuthService]
 })
 export class GameComponent implements OnInit {
   private action: 'join'|'create';
@@ -37,7 +38,8 @@ export class GameComponent implements OnInit {
     private acRoute: ActivatedRoute,
     private fb: FormBuilder,
     private afs: AngularFirestore,
-    private readonly ngf: NgForage
+    private auth: AuthService,
+    private readonly ngf: NgForage,
   ) {}
 
   static generateRoomName() {
@@ -54,7 +56,6 @@ export class GameComponent implements OnInit {
 
   async ngOnInit() {
     this.generateForms();
-    this.getAllRooms();
   }
 
   setAction(action) {
@@ -116,6 +117,7 @@ export class GameComponent implements OnInit {
   async onSubmitCreateRoom() {
     const username = this.formCreateRoom.value.username;
     if (username) {
+      await this.auth.anonymousLogin();
       await this.createRoom(username);
       this.user = {
         username,
@@ -151,6 +153,8 @@ export class GameComponent implements OnInit {
   }
 
   async createRoom(admin) {
+    await this.getAllRooms();
+
     const id = this.afs.createId();
     this.roomName = GameComponent.generateRoomName();
 

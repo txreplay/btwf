@@ -5,12 +5,12 @@
 export const environment = {
   production: false,
   firebase: {
-    apiKey: 'AIzaSyBHp6JEbfCsvybVuIBeD3ll0yLK-8NQFjQ',
-    authDomain: 'btwf-e8cad.firebaseapp.com',
-    databaseURL: 'https://btwf-e8cad.firebaseio.com',
-    projectId: 'btwf-e8cad',
-    storageBucket: 'btwf-e8cad.appspot.com',
-    messagingSenderId: '955923144647'
+    apiKey: 'AIzaSyA-Tgg1bldLO-uemVvwstMbFRvx5LOM36g',
+    authDomain: 'btwf-8888.firebaseapp.com',
+    databaseURL: 'https://btwf-8888.firebaseio.com',
+    projectId: 'btwf-8888',
+    storageBucket: 'btwf-8888.appspot.com',
+    messagingSenderId: '516108953790'
   }
 };
 

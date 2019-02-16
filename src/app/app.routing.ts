@@ -13,17 +13,8 @@ export const AppRoutes: Routes = [{
     path: 'homepage',
     loadChildren: './homepage/homepage.module#HomepageModule',
   }, {
-    path: 'create',
-    loadChildren: './create/create.module#CreateModule',
-  }, {
     path: 'game',
     loadChildren: './game/game.module#GameModule',
-  }, {
-    path: 'join',
-    loadChildren: './join/join.module#GameModule',
-  }, {
-    path: 'join/:id',
-    loadChildren: './join/join.module#GameModule',
   }]
 }, {
   path: '**',
