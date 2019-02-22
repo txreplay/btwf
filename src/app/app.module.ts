@@ -10,7 +10,6 @@ import { AppComponent } from './app.component';
 import { LayoutComponent } from './layout/layout.component';
 import { HeaderComponent } from './layout/header/header.component';
 
-
 import {AppRoutes} from './app.routing';
 import {MaterialModule} from './material-module';
 import { environment } from '../environments/environment';
@@ -35,7 +34,7 @@ import { environment } from '../environments/environment';
 export class AppModule {
   public constructor(ngfConfig: NgForageConfig) {
     ngfConfig.configure({
-      name: 'MyApp',
+      name: 'btwf',
       driver: [
         Driver.INDEXED_DB,
         Driver.LOCAL_STORAGE

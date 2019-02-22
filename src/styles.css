@@ -10,7 +10,28 @@ body {
 
 .container {
   height: 100%;
-  padding: 0 15px;
+  padding: 15px 15px 0 15px;
+  text-align: center;
+}
+
+mat-form-field, .btn {
+  width: 80%;
+  display: block;
+  margin: 10px auto;
+}
+
+input {
+  text-align: center;
+}
+
+h1, h2, h3, h4, h5, h6 {
+  margin: 0;
+}
+
+.mini-icon {
+  height: 16px;
+  width: 16px;
+  font-size: 16px;
 }
 
 #spinner {
@@ -91,3 +112,6 @@ body {
 .vas { vertical-align: sub; }
 
 .ml5 { margin-left: 5px; }
+
+.tac { text-align: center;}
+.tal { text-align: left;}

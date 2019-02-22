@@ -7,11 +7,11 @@ export const AppRoutes: Routes = [{
   component: LayoutComponent,
   children: [{
     path: '',
-    redirectTo: 'game',
+    redirectTo: 'homepage',
     pathMatch: 'full'
   }, {
-    path: 'game',
-    loadChildren: './game/game.module#GameModule',
+    path: 'homepage',
+    loadChildren: './homepage/homepage.module#HomepageModule',
   }]
 }, {
   path: '**',

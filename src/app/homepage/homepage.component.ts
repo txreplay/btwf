@@ -8,12 +8,12 @@ import {AuthService} from '../services/auth.service';
 import {RoomService} from '../services/room.service';
 
 @Component({
-  selector: 'app-game',
-  templateUrl: './game.component.html',
-  styleUrls: ['./game.component.scss'],
+  selector: 'app-homepage',
+  templateUrl: './homepage.component.html',
+  styleUrls: ['./homepage.component.scss'],
   providers: [NgForage, AuthService, RoomService]
 })
-export class GameComponent implements OnInit {
+export class HomepageComponent implements OnInit {
   private action: 'join'|'create';
 
   private formCreateRoom: FormGroup;
