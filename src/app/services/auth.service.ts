@@ -10,12 +10,8 @@ export class AuthService {
     this.afAuth.authState.subscribe(auth => this.authState = auth);
   }
 
-  isUserAnonymousLoggedIn(): boolean {
-    return (this.authState !== null) ? this.authState.isAnonymous : false;
-  }
-
   currentUserId(): string {
-    return (this.authState !== null) ? this.authState.uid : '';
+    return (this.authState !== null) ? this.authState.user.uid : '';
   }
 
   anonymousLogin() {
@@ -27,7 +23,7 @@ export class AuthService {
       .catch(error => console.log(error));
   }
 
-  async signOut(): void {
+  async signOut(): Promise<any> {
     await this.afAuth.auth.signOut();
   }
 }

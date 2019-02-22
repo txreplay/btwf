@@ -5,7 +5,7 @@ import { AngularFirestore, AngularFirestoreCollection } from '@angular/fire/fire
 import {NgForage} from 'ngforage';
 
 
-import {RoomModel} from '../../models/room.model';
+import {Room} from '../../models/room.model';
 import {map} from 'rxjs/operators';
 import {Observable} from 'rxjs';
 
@@ -34,7 +34,7 @@ export class CreateComponent implements OnInit {
   }
 
   getAllRooms() {
-    this.$roomsCollection = this.afs.collection<RoomModel>('rooms');
+    this.$roomsCollection = this.afs.collection<Room>('rooms');
 
     this.$rooms = this.$roomsCollection.snapshotChanges().pipe(
       map(actions => actions.map(a => {

@@ -5,7 +5,7 @@ import { AngularFirestore, AngularFirestoreCollection } from '@angular/fire/fire
 import {Observable} from 'rxjs';
 import { map } from 'rxjs/operators';
 
-import {RoomModel} from '../../models/room.model';
+import {Room} from '../../models/room.model';
 import {NgForage} from 'ngforage';
 
 @Component({
@@ -17,7 +17,6 @@ import {NgForage} from 'ngforage';
 export class JoinComponent implements OnInit {
   public formCode: FormGroup;
   public formPseudo: FormGroup;
-  private afs: AngularFirestore;
 
   private $roomCollection: AngularFirestoreCollection<any>;
   private $room: Observable<any>;
@@ -59,7 +58,7 @@ export class JoinComponent implements OnInit {
 
   getRoomDetails(roomCode) {
     this.$roomCollection = this.afs
-      .collection<RoomModel>('rooms', ref => ref
+      .collection<Room>('rooms', ref => ref
       .where('code', '==', roomCode)
       .limit(1));
 
@@ -79,7 +78,7 @@ export class JoinComponent implements OnInit {
 
   onSubmitPseudo() {
     if (this.formPseudo.value.pseudo) {
-      const document = this.afs.collection<RoomModel>('rooms').doc(this.room.id);
+      const document = this.afs.collection<Room>('rooms').doc(this.room.id);
 
       return this.afs.firestore.runTransaction((transaction) => {
         return transaction.get(document.ref).then((doc) => {

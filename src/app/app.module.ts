@@ -4,7 +4,7 @@ import { RouterModule } from '@angular/router';
 import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
 import { ServiceWorkerModule } from '@angular/service-worker';
 
-import {NgForageModule, NgForageConfig, Driver} from 'ngforage';
+import {Driver, NgForageConfig, NgForageModule} from 'ngforage';
 
 import { AppComponent } from './app.component';
 import { LayoutComponent } from './layout/layout.component';
@@ -32,4 +32,14 @@ import { environment } from '../environments/environment';
   providers: [],
   bootstrap: [AppComponent]
 })
-export class AppModule { }
+export class AppModule {
+  public constructor(ngfConfig: NgForageConfig) {
+    ngfConfig.configure({
+      name: 'MyApp',
+      driver: [
+        Driver.INDEXED_DB,
+        Driver.LOCAL_STORAGE
+      ]
+    });
+  }
+}

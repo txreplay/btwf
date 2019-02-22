@@ -7,7 +7,7 @@ import {NgForage} from 'ngforage';
 import {Observable} from 'rxjs';
 import { map } from 'rxjs/operators';
 
-import {Room, Room} from '../../models/room.model';
+import {Room} from '../../models/room.model';
 import {User} from '../../models/user.model';
 import {AuthService} from '../services/auth.service';
 
@@ -56,18 +56,22 @@ export class GameComponent implements OnInit {
 
   async ngOnInit() {
     this.generateForms();
+    await this.retrieveSession();
   }
 
   setAction(action) {
     this.action = action;
   }
 
-  cancelAction() {
+  async cancelAction() {
     this.action = null;
     this.$roomCollection = null;
+    this.$rooms = null;
     this.$room = null;
     this.currRoom = null;
     this.roomName = null;
+    this.user = null;
+    await this.ngf.clear();
   }
 
   generateForms() {
@@ -114,45 +118,68 @@ export class GameComponent implements OnInit {
     );
   }
 
+  async retrieveSession() {
+    this.user = await this.ngf.getItem('user');
+    this.roomName = await this.ngf.getItem('room');
+
+    if (this.user && this.roomName) {
+      this.action = (this.user.isAdmin) ? 'create' : 'join';
+      await this.getOneRoomByName(this.roomName);
+    }
+  }
+
   async onSubmitCreateRoom() {
     const username = this.formCreateRoom.value.username;
     if (username) {
       await this.auth.anonymousLogin();
-      await this.createRoom(username);
+      const afsId = await this.auth.currentUserId();
+      await this.createRoom(username, afsId);
+
+
       this.user = {
+        afsId,
         username,
         isAdmin: false,
         createdAt: new Date(),
         updatedAt: new Date()
       };
+
       await this.ngf.setItem('user', this.user);
+      await this.ngf.setItem('room', this.roomName);
+
       this.getOneRoomByName(this.roomName);
     }
   }
 
   async onSubmitJoinRoom() {
     const username = this.formJoinRoom.value.username;
+
     if (username) {
-      await this.addPlayer(username);
+      const afsId = await this.auth.currentUserId();
+      await this.addPlayer(username, afsId);
+
       this.user = {
         username,
         isAdmin: false,
         createdAt: new Date(),
         updatedAt: new Date()
       };
-      await this.ngf.setItem('user', this.user);
 
+      await this.ngf.setItem('user', this.user);
     }
   }
 
   async onSubmitGetRoom() {
     const roomName = this.formGetRoom.value.roomName;
+
     if (roomName) {
+      await this.auth.anonymousLogin();
+      await this.ngf.setItem('room', roomName);
       await this.getOneRoomByName(roomName);
     }
   }
 
-  async createRoom(admin) {
+  async createRoom(admin, afsId) {
     await this.getAllRooms();
 
     const id = this.afs.createId();
@@ -160,22 +187,23 @@ export class GameComponent implements OnInit {
 
     const room: Room = {
       name: this.roomName,
-      admin,
-      players: [admin],
+      admin: admin + '#' + afsId,
+      players: [admin + '#' + afsId],
       status: 'waitingPlayers',
       createdAt: new Date(),
       updatedAt: new Date(),
     };
+
     await this.$roomsCollection.doc(id).set(room);
   }
 
-  addPlayer(username) {
-    const document = this.afs.collection<RoomModel>('rooms').doc(this.currRoom.id);
+  addPlayer(username, afsId) {
+    const document = this.afs.collection<Room>('rooms').doc(this.currRoom.id);
 
     return this.afs.firestore.runTransaction((transaction) => {
       return transaction.get(document.ref).then((doc) => {
         const data = doc.data();
-        data.players.push(username);
+        data.players.push(username + '#' + afsId);
 
         transaction.update(document.ref, {
           players: data.players,

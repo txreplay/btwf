@@ -22,7 +22,7 @@
   <div *ngFor="let room of $room | async">
     <h3>Salon : {{ room.name }}</h3>
     <p>Joueurs connectés :</p>
-    <p *ngFor="let player of room.players"> -> {{ player }}</p>
+    <p *ngFor="let player of room.players"> <span [ngClass]="(player.isAdmin) ? 'isAdmin' : ''">-> {{ player }}</span></p>
   </div>
 
   <!--TODO: If admin start the game-->
