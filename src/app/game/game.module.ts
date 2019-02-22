@@ -11,6 +11,7 @@ import { GameComponent } from './game.component';
 import {MaterialModule} from '../material-module';
 import { environment } from '../../environments/environment';
 import {AuthService} from '../services/auth.service';
+import {UsernamePipe} from '../services/username.pipe';
 
 @NgModule({
   imports: [
@@ -24,7 +25,7 @@ import {AuthService} from '../services/auth.service';
     RouterModule.forChild(JoinRoutes),
   ],
   providers: [{ provide: FirestoreSettingsToken, useValue: {} }, AuthService],
-  declarations: [ GameComponent ]
+  declarations: [ GameComponent, UsernamePipe ]
 })
 
 export class GameModule {

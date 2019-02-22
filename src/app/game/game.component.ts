@@ -135,11 +135,10 @@ export class GameComponent implements OnInit {
       const afsId = await this.auth.currentUserId();
       await this.createRoom(username, afsId);
 
-
       this.user = {
-        afsId,
+        id: afsId,
         username,
-        isAdmin: false,
+        isAdmin: true,
         createdAt: new Date(),
         updatedAt: new Date()
       };
@@ -159,6 +158,7 @@ export class GameComponent implements OnInit {
       await this.addPlayer(username, afsId);
 
       this.user = {
+        id: afsId,
         username,
         isAdmin: false,
         createdAt: new Date(),

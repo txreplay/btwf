@@ -19,7 +19,7 @@ import { environment } from '../environments/environment';
   declarations: [
     AppComponent,
     LayoutComponent,
-    HeaderComponent
+    HeaderComponent,
   ],
   imports: [
     BrowserModule,
