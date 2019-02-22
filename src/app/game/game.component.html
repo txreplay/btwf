@@ -5,10 +5,10 @@
   </section>
 
   <section class="cancel" *ngIf="action == 'create' || action == 'join'">
-    <button mat-raised-button color="secondary" (click)="cancelAction()">Retour</button>
+    <button mat-raised-button color="secondary" (click)="reset()">Retour</button>
   </section>
 
-  <section class="createRoom" *ngIf="action == 'create' && !$room">
+  <section class="createRoom" *ngIf="action == 'create' && !room.$room">
     <form [formGroup]="formCreateRoom" (ngSubmit)="onSubmitCreateRoom()">
       <mat-label>Votre pseudo: </mat-label>
       <input matInput type="text" [formControl]="formCreateRoom.controls['username']">
@@ -19,14 +19,14 @@
     </form>
   </section>
 
-  <section class="currRoom" *ngIf="$room">
-    <div *ngFor="let room of $room | async">
-      <h3>Salon : {{ room.name }}</h3>
+  <section class="currRoom" *ngIf="room.$room">
+    <div *ngFor="let currRoom of room.$room | async">
+      <h3>Salon : {{ currRoom.name }}</h3>
       <p>Joueurs connectés :</p>
       <ul>
-        <li *ngFor="let player of room.players">
+        <li *ngFor="let player of currRoom.players">
           <span>{{ player|username:'name' }}</span>
-          <mat-icon class="vas ml5" *ngIf="player == room.admin" matTooltip="Administrateur du salon">star</mat-icon>
+          <mat-icon class="vas ml5" *ngIf="player == currRoom.admin" matTooltip="Administrateur du salon">star</mat-icon>
         </li>
       </ul>
     </div>
@@ -45,7 +45,7 @@
 
   <section class="joinRoom" *ngIf="action == 'join'">
     <!-- GET ROOM -->
-    <form [formGroup]="formGetRoom" (ngSubmit)="onSubmitGetRoom()" *ngIf="!$room">
+    <form [formGroup]="formGetRoom" (ngSubmit)="onSubmitGetRoom()" *ngIf="!room.$room">
       <mat-label>Nom du salon: </mat-label>
       <input matInput type="text" [formControl]="formGetRoom.controls['roomName']">
 
@@ -55,7 +55,7 @@
     </form>
 
     <!-- JOIN ROOM -->
-    <div *ngIf="$room && !user">
+    <div *ngIf="room.$room && !auth.user">
       <form [formGroup]="formJoinRoom" (ngSubmit)="onSubmitJoinRoom()">
         <mat-label>Votre pseudo: </mat-label>
         <input matInput type="text" [formControl]="formJoinRoom.controls['username']">

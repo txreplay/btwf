@@ -12,6 +12,7 @@ import {MaterialModule} from '../material-module';
 import { environment } from '../../environments/environment';
 import {AuthService} from '../services/auth.service';
 import {UsernamePipe} from '../services/username.pipe';
+import {RoomService} from '../services/room.service';
 
 @NgModule({
   imports: [
@@ -24,7 +25,7 @@ import {UsernamePipe} from '../services/username.pipe';
     AngularFireAuthModule,
     RouterModule.forChild(JoinRoutes),
   ],
-  providers: [{ provide: FirestoreSettingsToken, useValue: {} }, AuthService],
+  providers: [{ provide: FirestoreSettingsToken, useValue: {} }, AuthService, RoomService],
   declarations: [ GameComponent, UsernamePipe ]
 })
 

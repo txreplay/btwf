@@ -2,9 +2,12 @@ import { Injectable } from '@angular/core';
 import { Router } from '@angular/router';
 import { AngularFireAuth } from 'angularfire2/auth';
 
+import {User} from '../../models/user.model';
+
 @Injectable()
 export class AuthService {
   private authState: any = null;
+  public user: User;
 
   constructor(private afAuth: AngularFireAuth, private router: Router) {
     this.afAuth.authState.subscribe(auth => this.authState = auth);
@@ -17,7 +20,6 @@ export class AuthService {
   anonymousLogin() {
     return this.afAuth.auth.signInAnonymously()
       .then(user => {
-        console.log(user);
         this.authState = user;
       })
       .catch(error => console.log(error));
