@@ -14,7 +14,7 @@ import {RoomService} from '../services/room.service';
   providers: [NgForage, AuthService, RoomService]
 })
 export class HomepageComponent implements OnInit {
-  private action: 'join'|'create';
+  public action: 'join'|'create';
 
   private formCreateRoom: FormGroup;
   private formGetRoom: FormGroup;

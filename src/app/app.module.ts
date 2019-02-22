@@ -25,7 +25,6 @@ import { environment } from '../environments/environment';
     MaterialModule,
     RouterModule.forRoot(AppRoutes),
     BrowserAnimationsModule,
-    NgForageModule.forRoot(),
     ServiceWorkerModule.register('ngsw-worker.js', { enabled: environment.production }),
   ],
   providers: [],
