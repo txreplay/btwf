@@ -5,7 +5,9 @@ import {map} from 'rxjs/operators';
 
 import {Room} from '../../models/room.model';
 
-@Injectable()
+@Injectable({
+  providedIn: 'root',
+})
 export class RoomService {
   private $roomsCollection: AngularFirestoreCollection<any>;
   private $rooms: Observable<any>;
@@ -15,9 +17,7 @@ export class RoomService {
   public currRoom: any|Room;
   public roomName: string;
 
-  constructor(private afs: AngularFirestore,) {
-
-  }
+  constructor(private afs: AngularFirestore) {}
 
   static generateRoomName() {
     const LETTERS: Array<string> = ['A', 'B', 'C', 'D', 'E', 'F', 'G', 'H', 'I', 'J', 'K', 'L', 'M', 'N', 'P', 'Q', 'R', 'S', 'T', 'U', 'V', 'W', 'X', 'Y', 'Z'];
@@ -73,6 +73,7 @@ export class RoomService {
         const data = a.payload.doc.data();
         const id = a.payload.doc.id;
         this.currRoom = { id, ...data };
+        console.log(id, ...data);
 
         return { id, ...data };
       }))

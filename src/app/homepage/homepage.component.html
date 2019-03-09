@@ -8,7 +8,11 @@
     <button mat-raised-button class="btn" color="warn" (click)="setAction('join')">Rejoindre une partie</button>
   </section>
 
-  <section class="createRoom" *ngIf="action == 'create' && !room.$room">
+  <section class="error" *ngIf="error">
+    <p class="error">{{error}}</p>
+  </section>
+
+  <section class="createRoom" *ngIf="action == 'create' && !room.$room && !error">
     <form [formGroup]="formCreateRoom" (ngSubmit)="onSubmitCreateRoom()">
       <mat-form-field>
         <mat-label>Votre pseudo</mat-label>
@@ -21,7 +25,7 @@
     </form>
   </section>
 
-  <section class="currRoom" *ngIf="room.$room">
+  <section class="currRoom" *ngIf="room.$room && !error">
     <div *ngFor="let currRoom of room.$room | async">
       <h3>Salon : {{ currRoom.name }}</h3>
 
@@ -43,7 +47,7 @@
     </div>
   </section>
 
-  <section class="joinRoom" *ngIf="action == 'join'">
+  <section class="joinRoom" *ngIf="action == 'join' && !error">
     <!-- GET ROOM -->
     <form [formGroup]="formGetRoom" (ngSubmit)="onSubmitGetRoom()" *ngIf="!room.$room">
       <mat-form-field>

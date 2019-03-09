@@ -5,6 +5,10 @@ import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
 import { ServiceWorkerModule } from '@angular/service-worker';
 import { LocationStrategy, HashLocationStrategy } from '@angular/common';
 
+import { AngularFireModule } from '@angular/fire';
+import {AngularFireAuthModule} from 'angularfire2/auth';
+import { AngularFirestoreModule, FirestoreSettingsToken } from '@angular/fire/firestore';
+
 import {Driver, NgForageConfig} from 'ngforage';
 
 import { AppComponent } from './app.component';
@@ -27,10 +31,14 @@ import { environment } from '../environments/environment';
     RouterModule.forRoot(AppRoutes),
     BrowserAnimationsModule,
     ServiceWorkerModule.register('ngsw-worker.js', { enabled: environment.production }),
+    AngularFireModule.initializeApp(environment.firebase, 'btwf'),
+    AngularFirestoreModule.enablePersistence(),
+    AngularFireAuthModule,
   ],
   providers: [{
-    provide: LocationStrategy,
-    useClass: HashLocationStrategy
+    provide: [LocationStrategy, FirestoreSettingsToken],
+    useClass: HashLocationStrategy,
+    useValue: {}
   }],
   bootstrap: [AppComponent]
 })

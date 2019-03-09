@@ -12,6 +12,9 @@ export const AppRoutes: Routes = [{
   }, {
     path: 'homepage',
     loadChildren: './homepage/homepage.module#HomepageModule',
+  }, {
+    path: 'game',
+    loadChildren: './game/game.module#GameModule',
   }]
 }, {
   path: '**',

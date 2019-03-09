@@ -1,6 +1,6 @@
 import { Component, OnInit } from '@angular/core';
 import {FormBuilder, FormGroup, Validators} from '@angular/forms';
-import { AngularFirestore } from '@angular/fire/firestore';
+import {AngularFirestore} from '@angular/fire/firestore';
 import {NgForage} from 'ngforage';
 
 import {Room} from '../../models/room.model';
@@ -11,10 +11,11 @@ import {RoomService} from '../services/room.service';
   selector: 'app-homepage',
   templateUrl: './homepage.component.html',
   styleUrls: ['./homepage.component.scss'],
-  providers: [NgForage, AuthService, RoomService]
+  providers: [NgForage]
 })
 export class HomepageComponent implements OnInit {
   public action: 'join'|'create';
+  public error: string;
 
   private formCreateRoom: FormGroup;
   private formGetRoom: FormGroup;
@@ -42,6 +43,10 @@ export class HomepageComponent implements OnInit {
     this.action = null;
     this.room.reset();
     this.auth.user = null;
+    this.error = null;
+    this.formCreateRoom.reset();
+    this.formGetRoom.reset();
+    this.formJoinRoom.reset();
     await this.ngf.clear();
   }
 
@@ -64,7 +69,7 @@ export class HomepageComponent implements OnInit {
     this.room.roomName = await this.ngf.getItem('room');
 
     if (this.auth.user && this.room.roomName) {
-      this.action = (this.auth.user.isAdmin) ? 'create' : 'join';
+      this.action = (this.auth.user.isAdmin) ? 'create' : (!(this.auth.user.isAdmin)) ? 'join' : null;
       await this.room.getOneRoomByName(this.room.roomName);
     }
   }
@@ -96,17 +101,19 @@ export class HomepageComponent implements OnInit {
 
     if (username) {
       const afsId = await this.auth.currentUserId();
-      await this.addPlayer(username, afsId);
+      if (afsId !== null) {
+        await this.addPlayer(username, afsId);
 
-      this.auth.user = {
-        id: afsId,
-        username,
-        isAdmin: false,
-        createdAt: new Date(),
-        updatedAt: new Date()
-      };
+        this.auth.user = {
+          id: afsId,
+          username,
+          isAdmin: false,
+          createdAt: new Date(),
+          updatedAt: new Date()
+        };
 
-      await this.ngf.setItem('user', this.auth.user);
+        await this.ngf.setItem('user', this.auth.user);
+      }
     }
   }
 
@@ -118,7 +125,36 @@ export class HomepageComponent implements OnInit {
       await this.auth.anonymousLogin();
       await this.ngf.setItem('room', roomName);
       await this.room.getOneRoomByName(roomName);
+
+      this.room.$room.subscribe((room) => {
+        if (room.length === 0) {
+          this.error = 'L\'id de ce salon ne semble pas exister.';
+        } else {
+          if (room[0].status === 'inGame') {
+            this.error = 'La partie a déjà débuté, vous ne pouvez plus la rejoindre.';
+          }
+        }
+      }, (error) => {
+        this.error = error;
+      });
     }
+  }
+
+  startGame() {
+    console.log(this.room.$room);
+
+    console.log('before');
+    this.room.$room.subscribe((room) => {
+      console.log(room);
+      // TODO: Check there is at least 3 players
+      // TODO: Change room status to inGame
+    }, (error) => {
+      console.error(error);
+    }, () => {
+      console.log('complete');
+    });
+
+    console.log('after');
   }
 
   addPlayer(username, afsId) {
