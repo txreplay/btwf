@@ -1,5 +1,6 @@
 import { Component, OnInit } from '@angular/core';
 import {FormBuilder, FormGroup, Validators} from '@angular/forms';
+import {Router} from '@angular/router';
 import {AngularFirestore} from '@angular/fire/firestore';
 import {NgForage} from 'ngforage';
 
@@ -27,6 +28,7 @@ export class HomepageComponent implements OnInit {
     public auth: AuthService,
     public room: RoomService,
     private readonly ngf: NgForage,
+    public router: Router
   ) {
   }
 
@@ -71,6 +73,7 @@ export class HomepageComponent implements OnInit {
     if (this.auth.user && this.room.roomName) {
       this.action = (this.auth.user.isAdmin) ? 'create' : (!(this.auth.user.isAdmin)) ? 'join' : null;
       await this.room.getOneRoomByName(this.room.roomName);
+      await this.router.navigate(['/game']);
     }
   }
 
@@ -113,6 +116,7 @@ export class HomepageComponent implements OnInit {
         };
 
         await this.ngf.setItem('user', this.auth.user);
+        await this.router.navigate(['/game']);
       }
     }
   }
@@ -140,21 +144,13 @@ export class HomepageComponent implements OnInit {
     }
   }
 
-  startGame() {
-    console.log(this.room.$room);
+  async startGame() {
+    this.room.getOneRoomByName(this.room.roomName);
 
-    console.log('before');
-    this.room.$room.subscribe((room) => {
-      console.log(room);
-      // TODO: Check there is at least 3 players
-      // TODO: Change room status to inGame
-    }, (error) => {
-      console.error(error);
-    }, () => {
-      console.log('complete');
-    });
-
-    console.log('after');
+    if (this.room.currRoom.players.length >= 3) {
+      await this.changeStatus();
+      // await this.router.navigate(['/game']);
+    }
   }
 
   addPlayer(username, afsId) {
@@ -169,6 +165,25 @@ export class HomepageComponent implements OnInit {
           players: data.players,
           updatedAt: new Date()
         });
+      });
+    });
+  }
+
+  changeStatus() {
+    const document = this.afs.collection<Room>('rooms').doc(this.room.currRoom.id);
+
+    return this.afs.firestore.runTransaction((transaction) => {
+      return transaction.get(document.ref).then((doc) => {
+        const data = doc.data();
+
+        if (data.status !== 'waitingPlayers') {
+          data.status = 'inGame';
+
+          transaction.update(document.ref, {
+            status: data.status,
+            updatedAt: new Date()
+          });
+        }
       });
     });
   }

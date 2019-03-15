@@ -73,7 +73,6 @@ export class RoomService {
         const data = a.payload.doc.data();
         const id = a.payload.doc.id;
         this.currRoom = { id, ...data };
-        console.log(id, ...data);
 
         return { id, ...data };
       }))

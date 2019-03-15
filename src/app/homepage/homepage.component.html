@@ -41,10 +41,6 @@
     <div *ngIf="action == 'create'">
       <button mat-raised-button color="primary" class="btn" (click)="startGame()">Démarrer la partie</button>
     </div>
-
-    <div *ngIf="auth.user && action == 'join'">
-      <p>En attente de joueurs...</p>
-    </div>
   </section>
 
   <section class="joinRoom" *ngIf="action == 'join' && !error">

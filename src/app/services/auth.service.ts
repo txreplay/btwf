@@ -15,7 +15,11 @@ export class AuthService {
   }
 
   currentUserId(): string {
-    return (this.authState !== null && this.authState.hasOwnProperty('uid')) ? this.authState.uid : null;
+    if (this.authState !== null) {
+      return (this.authState.hasOwnProperty('uid')) ? this.authState.uid : (this.authState.hasOwnProperty('user')) ? this.authState.user.uid : null;
+    } else {
+      return null;
+    }
   }
 
   anonymousLogin() {
