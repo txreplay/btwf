@@ -73,7 +73,10 @@ export class HomepageComponent implements OnInit {
     if (this.auth.user && this.room.roomName) {
       this.action = (this.auth.user.isAdmin) ? 'create' : (!(this.auth.user.isAdmin)) ? 'join' : null;
       await this.room.getOneRoomByName(this.room.roomName);
-      await this.router.navigate(['/game']);
+
+      if (!this.auth.user.isAdmin) {
+        await this.router.navigate(['/game']);
+      }
     }
   }
 
@@ -149,7 +152,6 @@ export class HomepageComponent implements OnInit {
 
     if (this.room.currRoom.players.length >= 3) {
       await this.changeStatus();
-      // await this.router.navigate(['/game']);
     }
   }
 
@@ -176,7 +178,8 @@ export class HomepageComponent implements OnInit {
       return transaction.get(document.ref).then((doc) => {
         const data = doc.data();
 
-        if (data.status !== 'waitingPlayers') {
+        console.log(data.status);
+        if (data.status === 'waitingPlayers') {
           data.status = 'inGame';
 
           transaction.update(document.ref, {
@@ -185,6 +188,8 @@ export class HomepageComponent implements OnInit {
           });
         }
       });
+    }).then(async () => {
+      await this.router.navigate(['/game']);
     });
   }
 }

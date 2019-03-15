@@ -40,6 +40,7 @@ export class RoomService {
     const room: Room = {
       name: this.roomName,
       admin: admin + '#' + afsId,
+      isBuzzable: false,
       players: [admin + '#' + afsId],
       status: 'waitingPlayers',
       createdAt: new Date(),

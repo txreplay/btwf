@@ -3,6 +3,7 @@ export interface Room {
   name: string;
   admin: string;
   players: Array<string>;
+  isBuzzable: boolean;
   status: string;
   createdAt: Date;
   updatedAt: Date;
