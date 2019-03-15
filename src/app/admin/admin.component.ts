@@ -17,7 +17,7 @@ import {SpotifyService} from '../services/spotify.service';
 })
 export class AdminComponent implements OnInit {
   private user: User;
-  private accessToken: string;
+  public accessToken: string;
 
   constructor(
     private afs: AngularFirestore,
@@ -30,7 +30,7 @@ export class AdminComponent implements OnInit {
   }
 
   async ngOnInit() {
-    this.ngf.getItem('accessToken').then((accessToken) => {
+    this.ngf.getItem('accessToken').then((accessToken: any) => {
       this.accessToken = accessToken;
     });
   }

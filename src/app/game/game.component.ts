@@ -15,7 +15,7 @@ import {User} from '../../models/user.model';
 
 })
 export class GameComponent implements OnInit {
-  private user: User;
+  public user: User;
 
   constructor(
     private afs: AngularFirestore,
@@ -27,11 +27,11 @@ export class GameComponent implements OnInit {
   }
 
   async ngOnInit() {
-    await this.ngf.getItem('user').then((user) => {
+    await this.ngf.getItem('user').then((user: any) => {
       this.user = user;
     });
 
-    await this.ngf.getItem('room').then(async (room) => {
+    await this.ngf.getItem('room').then(async (room: any) => {
       await this.room.getOneRoomByName(room);
     });
 

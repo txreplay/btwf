@@ -38,8 +38,11 @@ import {HttpClientModule} from '@angular/common/http';
     AngularFireAuthModule,
   ],
   providers: [{
-    provide: [LocationStrategy, FirestoreSettingsToken],
+    provide: LocationStrategy,
     useClass: HashLocationStrategy,
+    useValue: {}
+  }, {
+    provide: FirestoreSettingsToken,
     useValue: {}
   }],
   bootstrap: [AppComponent]
