@@ -15,6 +15,9 @@ export const AppRoutes: Routes = [{
   }, {
     path: 'game',
     loadChildren: './game/game.module#GameModule',
+  }, {
+    path: 'admin',
+    loadChildren: './admin/admin.module#AdminModule',
   }]
 }, {
   path: '**',

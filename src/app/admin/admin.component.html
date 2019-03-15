@@ -1,0 +1,13 @@
+<section class="admin">
+
+  <div *ngIf="!accessToken">
+    <button mat-raised-button color="primary" class="btn" (click)="spotifyConnect()">Spotify Connect</button>
+  </div>
+
+  <div *ngIf="accessToken">
+    <button mat-raised-button color="primary" class="btn" (click)="search()">Search</button>
+  </div>
+
+
+
+</section>

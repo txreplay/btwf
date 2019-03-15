@@ -189,7 +189,7 @@ export class HomepageComponent implements OnInit {
         }
       });
     }).then(async () => {
-      await this.router.navigate(['/game']);
+      await this.router.navigate(['/admin']);
     });
   }
 }

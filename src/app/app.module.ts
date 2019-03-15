@@ -18,6 +18,7 @@ import { HeaderComponent } from './layout/header/header.component';
 import {AppRoutes} from './app.routing';
 import {MaterialModule} from './material-module';
 import { environment } from '../environments/environment';
+import {HttpClientModule} from '@angular/common/http';
 
 @NgModule({
   declarations: [
@@ -30,6 +31,7 @@ import { environment } from '../environments/environment';
     MaterialModule,
     RouterModule.forRoot(AppRoutes),
     BrowserAnimationsModule,
+    HttpClientModule,
     ServiceWorkerModule.register('ngsw-worker.js', { enabled: environment.production }),
     AngularFireModule.initializeApp(environment.firebase, 'btwf'),
     AngularFirestoreModule.enablePersistence(),
