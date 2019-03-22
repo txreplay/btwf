@@ -12,6 +12,8 @@ import {PouchdbService} from '../services/pouchdb.service';
 export class HomepageComponent implements OnInit {
   public action: 'join'|'create';
   public error: string;
+  public user: any;
+  public roomName: string;
 
   private formCreateRoom: FormGroup;
   private formGetRoom: FormGroup;
@@ -20,13 +22,12 @@ export class HomepageComponent implements OnInit {
   constructor(
     private fb: FormBuilder,
     public router: Router,
-    public pouchdb: PouchdbService
-  ) {
-  }
+    public pouchdb: PouchdbService,
+
+  ) {}
 
   async ngOnInit() {
     this.generateForms();
-    // await this.retrieveSession();
   }
 
   setAction(action) {
@@ -62,9 +63,8 @@ export class HomepageComponent implements OnInit {
     if (username) {
       const room = this.pouchdb.createRoom(username);
       await this.pouchdb.createUser(username, true, room._id);
-      const roomName = room._id.split('#');
 
-      this.router.navigate(['admin', {id: roomName[1]}]);
+      this.router.navigate(['admin', {id: room._id}]);
     }
   }
 
@@ -72,67 +72,26 @@ export class HomepageComponent implements OnInit {
     const roomName = this.formGetRoom.value.roomName;
 
     if (roomName) {
-      this.pouchdb.getRoomByName(roomName);
-      // Check if enough players
-      // Check if status is ready
+      await this.pouchdb.getRoomByName(roomName).then(async (room: any) => {
+        if (room.status !== 'waiting') {
+          this.error = 'Partie déjà commencée ou terminée';
+        }
+
+        this.roomName = roomName;
+      }).catch(() => {
+        this.error = 'Ce salon n\'existe pas.';
+      });
+
     }
   }
 
   async onSubmitJoinRoom() {
     const username = this.formJoinRoom.value.username;
-    const roomName = '';
 
     if (username) {
-      this.pouchdb.createUser(username, false, roomName);
-
-      this.pouchdb.userJoinRoom(username, roomName);
+      await this.pouchdb.createUser(username, false, this.roomName);
+      this.pouchdb.userJoinRoom(username, this.roomName);
       await this.router.navigate(['/game']);
     }
-  }
-
-  async startGame() {
-    // this.room.getOneRoomByName(this.room.roomName);
-    //
-    // if (this.room.currRoom.players.length >= 3) {
-    //   await this.changeStatus();
-    // }
-  }
-
-  addPlayer(username, afsId) {
-    // const document = this.afs.collection<Room>('rooms').doc(this.room.currRoom.id);
-    //
-    // return this.afs.firestore.runTransaction((transaction) => {
-    //   return transaction.get(document.ref).then((doc) => {
-    //     const data = doc.data();
-    //     data.players.push(username + '#' + afsId);
-    //
-    //     transaction.update(document.ref, {
-    //       players: data.players,
-    //       updatedAt: new Date()
-    //     });
-    //   });
-    // });
-  }
-
-  changeStatus() {
-    // const document = this.afs.collection<Room>('rooms').doc(this.room.currRoom.id);
-    //
-    // return this.afs.firestore.runTransaction((transaction) => {
-    //   return transaction.get(document.ref).then((doc) => {
-    //     const data = doc.data();
-    //
-    //     console.log(data.status);
-    //     if (data.status === 'waitingPlayers') {
-    //       data.status = 'inGame';
-    //
-    //       transaction.update(document.ref, {
-    //         status: data.status,
-    //         updatedAt: new Date()
-    //       });
-    //     }
-    //   });
-    // }).then(async () => {
-    //   await this.router.navigate(['/admin']);
-    // });
   }
 }

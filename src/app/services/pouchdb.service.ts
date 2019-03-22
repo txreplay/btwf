@@ -13,8 +13,8 @@ export class PouchdbService {
     this.localDB = new PouchDB('http://134.209.240.247:5984/btwf');
     this.remoteDB = new PouchDB('btwf');
 
-    this.localDB.replicate.to(this.remoteDB).on('change', () => {
-      console.log('change');
+    this.localDB.sync(this.remoteDB).on('change', () => {
+      console.log('--- SYNC ---');
     }).on('error', (err) => {
       console.error(err);
     });
@@ -36,10 +36,11 @@ export class PouchdbService {
 
   createRoom(username) {
     const doc = {
-      _id: 'room#' + PouchdbService.generateId(),
+      _id: PouchdbService.generateId(),
       admin: username,
       status: 'waiting',
-      isBuzzable: false
+      isBuzzable: false,
+      players: [username]
     };
 
     this.localDB.put(doc);
@@ -76,13 +77,16 @@ export class PouchdbService {
   userJoinRoom(username, roomName) {
     const self = this;
 
-    this.localDB.get('room#' + roomName).then((doc) => {
-      const players = doc.players.push(username);
+    this.localDB.get(roomName).then((doc) => {
+      doc.players.push(username);
 
       return self.localDB.put({
-        _id: 'room#' + roomName,
+        _id: roomName,
         _rev: doc._rev,
-        players
+        admin: doc.admin,
+        status: doc.status,
+        isBuzzable: doc.isBuzzable,
+        players: doc.players
       });
     }).then((response) => {
       console.log(response);

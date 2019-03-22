@@ -25,50 +25,32 @@
     </form>
   </section>
 
-  <!--<section class="currRoom" *ngIf="room.$room && !error">-->
-    <!--<div *ngFor="let currRoom of room.$room | async">-->
-      <!--<h3>Salon : {{ currRoom.name }}</h3>-->
+  <section class="joinRoom" *ngIf="action == 'join' && !error">
+    <!-- GET ROOM -->
+    <form [formGroup]="formGetRoom" (ngSubmit)="onSubmitGetRoom()" *ngIf="!roomName">
+      <mat-form-field>
+        <mat-label>ID du salon</mat-label>
+        <input matInput type="text" title="roomName" [formControl]="formGetRoom.controls['roomName']">
+      </mat-form-field>
 
-      <!--<p class="tal">Joueurs connectés :</p>-->
-      <!--<mat-list>-->
-        <!--<mat-list-item *ngFor="let player of currRoom.players">-->
-          <!--<span>{{ player|username:'name' }}</span>-->
-          <!--<mat-icon class="vas ml5 mini-icon" *ngIf="player == currRoom.admin" matTooltip="Administrateur du salon">star</mat-icon>-->
-        <!--</mat-list-item>-->
-      <!--</mat-list>-->
-    <!--</div>-->
+      <div class="form-group">
+        <button mat-raised-button color="primary" class="btn" [disabled]="!formGetRoom.valid" type="submit">Rejoindre</button>
+      </div>
+    </form>
 
-    <!--<div *ngIf="action == 'create'">-->
-      <!--<button mat-raised-button color="primary" class="btn" (click)="startGame()">Démarrer la partie</button>-->
-    <!--</div>-->
-  <!--</section>-->
+    <!-- JOIN ROOM -->
+    <div *ngIf="roomName">
+      <form [formGroup]="formJoinRoom" (ngSubmit)="onSubmitJoinRoom()">
+        <mat-form-field>
+          <mat-label>Votre pseudo</mat-label>
+          <input matInput type="text" title="username" [formControl]="formJoinRoom.controls['username']">
+        </mat-form-field>
 
-  <!--<section class="joinRoom" *ngIf="action == 'join' && !error">-->
-    <!--&lt;!&ndash; GET ROOM &ndash;&gt;-->
-    <!--<form [formGroup]="formGetRoom" (ngSubmit)="onSubmitGetRoom()" *ngIf="!room.$room">-->
-      <!--<mat-form-field>-->
-        <!--<mat-label>ID du salon</mat-label>-->
-        <!--<input matInput type="text" title="roomName" [formControl]="formGetRoom.controls['roomName']">-->
-      <!--</mat-form-field>-->
+        <div class="form-group">
+          <button mat-raised-button color="primary" class="btn" [disabled]="!formJoinRoom.valid" type="submit">Rejoindre</button>
+        </div>
+      </form>
+    </div>
 
-      <!--<div class="form-group">-->
-        <!--<button mat-raised-button color="primary" class="btn" [disabled]="!formGetRoom.valid" type="submit">Rejoindre</button>-->
-      <!--</div>-->
-    <!--</form>-->
-
-    <!--&lt;!&ndash; JOIN ROOM &ndash;&gt;-->
-    <!--<div *ngIf="room.$room && !auth.user">-->
-      <!--<form [formGroup]="formJoinRoom" (ngSubmit)="onSubmitJoinRoom()">-->
-        <!--<mat-form-field>-->
-          <!--<mat-label>Votre pseudo</mat-label>-->
-          <!--<input matInput type="text" title="username" [formControl]="formJoinRoom.controls['username']">-->
-        <!--</mat-form-field>-->
-
-        <!--<div class="form-group">-->
-          <!--<button mat-raised-button color="primary" class="btn" [disabled]="!formJoinRoom.valid" type="submit">Rejoindre</button>-->
-        <!--</div>-->
-      <!--</form>-->
-    <!--</div>-->
-
-  <!--</section>-->
+  </section>
 </div>

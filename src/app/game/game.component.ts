@@ -14,9 +14,6 @@ export class GameComponent implements OnInit {
   public user: User;
 
   constructor(
-    // private afs: AngularFirestore,
-    // public auth: AuthService,
-    // public room: RoomService,
     // private readonly ngf: NgForage,
   ) {
 
