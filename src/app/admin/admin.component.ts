@@ -1,51 +1,63 @@
 import { Component, OnInit } from '@angular/core';
 
-import { AngularFirestore } from '@angular/fire/firestore';
-import {NgForage} from 'ngforage';
-
-import {AuthService} from '../services/auth.service';
-import {RoomService} from '../services/room.service';
 import {User} from '../../models/user.model';
 import SpotifyWebApi from 'spotify-web-api-js';
 import {SpotifyService} from '../services/spotify.service';
+import {PouchdbService} from '../services/pouchdb.service';
+import {ActivatedRoute, Router} from '@angular/router';
+
 
 @Component({
   selector: 'app-admin',
   templateUrl: './admin.component.html',
   styleUrls: ['./admin.component.scss'],
-  providers: [NgForage]
+  providers: []
 })
 export class AdminComponent implements OnInit {
-  private user: User;
   public accessToken: string;
+  public user: any;
+  public room: any;
 
   constructor(
-    private afs: AngularFirestore,
-    public auth: AuthService,
+    private route: ActivatedRoute,
+    public router: Router,
     public spotify: SpotifyService,
-    public room: RoomService,
-    private readonly ngf: NgForage,
+    public pouchdb: PouchdbService,
   ) {
 
   }
 
   async ngOnInit() {
-    this.ngf.getItem('accessToken').then((accessToken: any) => {
-      this.accessToken = accessToken;
+    const roomName = this.route.snapshot.paramMap.get('id');
+    this.pouchdb.getRoomByName('room#' + roomName).then(async (room) => {
+      this.user = await this.pouchdb.getUser();
+
+      console.log(this.room);
+      console.log(this.user);
+
+      if (this.room.admin !== this.user.username) {
+        this.router.navigate(['homepage']);
+      }
+    }).catch(() => {
+      this.router.navigate(['homepage']);
     });
+
+    // this.ngf.getItem('accessToken').then((accessToken: any) => {
+    //   this.accessToken = accessToken;
+    // });
   }
 
   spotifyConnect() {
-    this.spotify.apiGetToken().subscribe(async (result: any) => {
-      this.accessToken = result;
-      await this.ngf.setItem('accessToken', result);
-    });
+    // this.spotify.apiGetToken().subscribe(async (result: any) => {
+    //   this.accessToken = result;
+    //   await this.ngf.setItem('accessToken', result);
+    // });
   }
 
   search() {
-    this.spotify.search('booba', this.accessToken).subscribe((result) => {
-      console.log(result);
-    });
+    // this.spotify.search('booba', this.accessToken).subscribe((result) => {
+    //   console.log(result);
+    // });
   }
 
 }
