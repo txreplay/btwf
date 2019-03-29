@@ -10,17 +10,11 @@ export class SpotifyService {
   apiURL: string;
   apiAccountsURL: string;
   client: string;
-  httpHeadersToken: any;
 
   constructor(private http: HttpClient) {
     this.apiAccountsURL = 'https://accounts.spotify.com/api';
     this.apiURL = 'https://api.spotify.com/v1';
     this.client = '58acfbd0300a41739ed8a45788e329eb:a492383738b646d485ce52e43ab0f777';
-    this.httpHeadersToken = {
-      headers: new HttpHeaders({
-        Authorization: `Basic ${btoa(this.client)}`
-      })
-    };
   }
 
   static httpHeaders(token) {
@@ -28,8 +22,13 @@ export class SpotifyService {
   }
 
   apiGetToken() {
+    const httpTokenHeaders = {headers: new HttpHeaders({
+        'Content-Type': 'application/x-www-form-urlencoded',
+        Authorization: `Basic ${btoa(this.client)}`
+    })};
+
     return this.http
-      .post(`${this.apiAccountsURL}/token`, 'grant_type=client_credentials', this.httpHeadersToken)
+      .post(`${this.apiAccountsURL}/token`, 'grant_type=client_credentials', httpTokenHeaders)
       .pipe(
         map((res: any) => res.access_token)
       );

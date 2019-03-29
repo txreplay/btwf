@@ -1,4 +1,4 @@
-<section class="admin">
+<section class="admin" *ngIf="room">
   <p>id : {{room._id}}</p>
   <p>status : {{room.status}}</p>
 
@@ -6,7 +6,12 @@
     <li *ngFor="let player of room.players">{{player}} <span *ngIf="room.admin == player">(admin)</span></li>
   </ul>
 
-  <div>
-    <button mat-raised-button color="primary" [disabled]="!room.players.length >= 3" class="btn" (click)="start()">START</button>
+  <div *ngIf="room.status == 'waiting'">
+    <button mat-raised-button color="primary" [disabled]="!room.players.length >= 3" class="btn" (click)="startGame()">START</button>
+  </div>
+
+  <div *ngIf="room.status == 'playing'">
+    <button mat-raised-button color="primary" *ngIf="!accessToken" class="btn" (click)="spotifyConnect()">Spotify Connect</button>
+    <!--<button mat-raised-button color="primary" [disabled]="!accessToken" class="btn" (click)="search()">Search</button>-->
   </div>
 </section>

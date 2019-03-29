@@ -26,6 +26,25 @@ export class PouchdbService {
     return roomName;
   }
 
+  syncPouch() {
+    return new Promise((resolve, reject) => {
+      PouchDB.sync(this.localDB, this.remoteDB, {live: true, retry: true}).on('change', (sync) => {
+        console.log('--- SYNC ---');
+        resolve(sync.change.docs[0]);
+      }).on('error', (err) => {
+        reject(err);
+      });
+    });
+  }
+
+  async getPouchdbDoc(documentId: string) {
+    return new Promise( (resolve, reject) => {
+      this.localDB.get(documentId)
+        .then(pouchdbDoc => resolve(pouchdbDoc) )
+        .catch(pouchdbError => reject(pouchdbError));
+    });
+  }
+
   async createRoom(username) {
     const doc = {
       _id: PouchdbService.generateId(),
@@ -55,42 +74,71 @@ export class PouchdbService {
   }
 
   userJoinRoom(username, roomName) {
-    const self = this;
-
-    this.localDB.get(roomName).then((doc) => {
-      doc.players.push(username);
-
-      return self.localDB.put({
-        _id: roomName,
-        _rev: doc._rev,
-        admin: doc.admin,
-        status: doc.status,
-        isBuzzable: doc.isBuzzable,
-        players: doc.players
-      });
-    }).then((response) => {
-      console.log(response);
-    }).catch((err) => {
-      console.log(err);
-    });
-  }
-
-  syncPouch() {
     return new Promise((resolve, reject) => {
-      PouchDB.sync(this.localDB, this.remoteDB, {live: true, retry: true}).on('change', (sync) => {
-        console.log('--- SYNC ---');
-        resolve(sync.change.docs[0]);
-      }).on('error', (err) => {
+      const self = this;
+
+      this.localDB.get(roomName).then((doc) => {
+        doc.players.push(username);
+
+        return self.localDB.put({
+          _id: roomName,
+          _rev: doc._rev,
+          admin: doc.admin,
+          status: doc.status,
+          isBuzzable: doc.isBuzzable,
+          players: doc.players
+        });
+      }).then((response) => {
+        resolve(response);
+      }).catch((err) => {
         reject(err);
       });
     });
   }
 
-  async getPouchdbDoc(documentId: string) {
-    return new Promise( (resolve, reject) => {
-      this.localDB.get(documentId)
-        .then(pouchdbDoc => resolve(pouchdbDoc) )
-        .catch(pouchdbError => reject(pouchdbError));
+  changeBuzzabilityStatus(isBuzzable, roomName) {
+    return new Promise((resolve, reject) => {
+      const self = this;
+
+      this.localDB.get(roomName).then((doc) => {
+        doc.isBuzzable = isBuzzable;
+
+        return self.localDB.put({
+          _id: roomName,
+          _rev: doc._rev,
+          admin: doc.admin,
+          status: doc.status,
+          isBuzzable: doc.isBuzzable,
+          players: doc.players
+        });
+      }).then((response) => {
+        resolve(response);
+      }).catch((err) => {
+        reject(err);
+      });
+    });
+  }
+
+  changeRoomStatus(status, roomName) {
+    return new Promise((resolve, reject) => {
+      const self = this;
+
+      this.localDB.get(roomName).then((doc) => {
+        doc.status = (status);
+
+        return self.localDB.put({
+          _id: roomName,
+          _rev: doc._rev,
+          admin: doc.admin,
+          status: doc.status,
+          isBuzzable: doc.isBuzzable,
+          players: doc.players
+        });
+      }).then((response) => {
+        resolve(response);
+      }).catch((err) => {
+        reject(err);
+      });
     });
   }
 }

@@ -14,6 +14,7 @@ import {MaterialModule} from './material-module';
 import { environment } from '../environments/environment';
 import {HttpClientModule} from '@angular/common/http';
 import {NgForageOptions, DEFAULT_CONFIG} from 'ngforage';
+import {AuthGuard} from './services/auth.guard';
 
 const ngfRootOptions: NgForageOptions = {
   name: 'BtwfUsers',
@@ -33,7 +34,9 @@ const ngfRootOptions: NgForageOptions = {
     HttpClientModule,
     ServiceWorkerModule.register('ngsw-worker.js', { enabled: environment.production }),
   ],
-  providers: [{
+  providers: [
+  AuthGuard,
+  {
     provide: LocationStrategy,
     useClass: HashLocationStrategy,
     useValue: {}

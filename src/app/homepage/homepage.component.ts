@@ -83,7 +83,7 @@ export class HomepageComponent implements OnInit {
 
     if (username) {
       await this.pouchdb.createUser(username, false, this.roomName);
-      this.pouchdb.userJoinRoom(username, this.roomName);
+      await this.pouchdb.userJoinRoom(username, this.roomName);
 
       await this.router.navigate(['game', {id: this.roomName}]);
     }

@@ -1,4 +1,4 @@
-<section class="user">
+<section class="user" *ngIf="room">
   <p>id : {{room._id}}</p>
   <p>status : {{room.status}}</p>
   <p>nb players : {{room.players.length - 1}}</p>
