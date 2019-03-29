@@ -10,7 +10,6 @@ export class AuthGuard implements CanActivateChild {
 
   canActivateChild(route: ActivatedRouteSnapshot, state: RouterStateSnapshot): Promise<boolean> | boolean {
     this.pouchdbService.getUser().then((user) => {
-      console.log({user});
       if (!user) {
         this.router.navigate(['homepage']);
       }

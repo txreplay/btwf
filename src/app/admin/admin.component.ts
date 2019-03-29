@@ -16,46 +16,36 @@ export class AdminComponent implements OnInit {
   public roomName: string;
   public room: any;
   public accessToken: string;
-  public searchResult: Array<any>;
 
   constructor(
-    private route: ActivatedRoute,
+    private acRoute: ActivatedRoute,
     public router: Router,
-    public spotify: SpotifyService,
+    public spotifyService: SpotifyService,
     public pouchdb: PouchdbService,
     private readonly ngf: NgForage
   ) {
-    this.roomName = this.route.snapshot.paramMap.get('id');
-
-    if (!this.roomName) {
-      this.router.navigate(['homepage']);
-    }
+    this.roomName = this.acRoute.snapshot.paramMap.get('id');
   }
 
   async ngOnInit() {
-    this.accessToken =  await this.ngf.getItem('accessToken');
-    console.log(this.accessToken);
+    if (!this.roomName) {
+      this.user = await this.pouchdb.getUser();
+      this.roomName = this.user.room;
+    }
+
     this.room = await this.pouchdb.getPouchdbDoc(this.roomName);
     this.room = await this.pouchdb.syncPouch();
     this.user = await this.pouchdb.getUser();
   }
 
   async startGame() {
-    await this.pouchdb.changeRoomStatus('playing', this.roomName);
+    // await this.pouchdb.changeRoomStatus('playing', this.roomName);
+    await this.spotifyService.pauseSpotify();
     await this.pouchdb.changeBuzzabilityStatus(true, this.roomName);
   }
 
-  spotifyConnect() {
-    this.spotify.apiGetToken().subscribe(async (result: any) => {
-      this.accessToken = result;
-      await this.ngf.setItem('accessToken', result);
-    });
-  }
-
-  search() {
-    this.spotify.search('booba', this.accessToken).subscribe((result: any) => {
-      console.log(result.tracks.items);
-      this.searchResult = result.tracks.items;
-    });
-  }
+  // async spotifyConnect() {
+  //   this.accessToken = await this.spotifyService.apiGetToken();
+  //   await this.ngf.setItem('accessToken', 'this.accessToken');
+  // }
 }

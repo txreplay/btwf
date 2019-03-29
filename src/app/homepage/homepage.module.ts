@@ -6,7 +6,6 @@ import {FormsModule, ReactiveFormsModule} from '@angular/forms';
 import { JoinRoutes } from './homepage.routing';
 import { HomepageComponent } from './homepage.component';
 import {MaterialModule} from '../material-module';
-import {PipesModule} from '../services/pipes.module';
 
 @NgModule({
   imports: [
@@ -14,7 +13,6 @@ import {PipesModule} from '../services/pipes.module';
     FormsModule,
     ReactiveFormsModule,
     MaterialModule,
-    PipesModule,
     RouterModule.forChild(JoinRoutes),
   ],
   declarations: [ HomepageComponent ]

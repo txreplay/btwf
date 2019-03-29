@@ -1,20 +1,22 @@
 import { BrowserModule } from '@angular/platform-browser';
 import { NgModule } from '@angular/core';
 import { RouterModule } from '@angular/router';
+import {HttpClientModule, HTTP_INTERCEPTORS} from '@angular/common/http';
 import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
 import { ServiceWorkerModule } from '@angular/service-worker';
-import { LocationStrategy, HashLocationStrategy } from '@angular/common';
 
 import { AppComponent } from './app.component';
 import { LayoutComponent } from './layout/layout.component';
 import { HeaderComponent } from './layout/header/header.component';
 
-import {AppRoutes} from './app.routing';
-import {MaterialModule} from './material-module';
-import { environment } from '../environments/environment';
-import {HttpClientModule} from '@angular/common/http';
+import {SpotifyAuthModule} from 'spotify-auth';
 import {NgForageOptions, DEFAULT_CONFIG} from 'ngforage';
+
+import {AppRoutes} from './app.routing';
+import {environment} from '../environments/environment';
 import {AuthGuard} from './services/auth.guard';
+import {MaterialModule} from './material-module';
+import {SpotifyAuthInterceptor2} from './services/spotify-auth.interceptor';
 
 const ngfRootOptions: NgForageOptions = {
   name: 'BtwfUsers',
@@ -29,6 +31,7 @@ const ngfRootOptions: NgForageOptions = {
   imports: [
     BrowserModule,
     MaterialModule,
+    SpotifyAuthModule.forRoot(),
     RouterModule.forRoot(AppRoutes),
     BrowserAnimationsModule,
     HttpClientModule,
@@ -37,13 +40,14 @@ const ngfRootOptions: NgForageOptions = {
   providers: [
   AuthGuard,
   {
-    provide: LocationStrategy,
-    useClass: HashLocationStrategy,
-    useValue: {}
-  }, {
       provide: DEFAULT_CONFIG,
       useValue: ngfRootOptions
-    }],
+  },
+  {
+    provide: HTTP_INTERCEPTORS,
+    useClass: SpotifyAuthInterceptor2,
+    multi: true
+  }],
   bootstrap: [AppComponent]
 })
 export class AppModule {
