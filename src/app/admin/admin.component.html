@@ -7,7 +7,7 @@
   </ul>
 
   <div *ngIf="room.status == 'waiting'">
-    <button mat-raised-button color="primary" *ngIf="!accessToken" class="btn" (click)="spotifyService.login()">Spotify Connect</button>
+    <button mat-raised-button color="primary" *ngIf="!accessToken" class="btn" (click)="spotifyService.spotifyConnect()">Spotify Connect</button>
     <br>
     <button mat-raised-button color="primary" [disabled]="room.players.length <= 2" class="btn" (click)="startGame()">START</button>
     <!--<button mat-raised-button color="primary" [disabled]="!accessToken" class="btn" (click)="search()">Search</button>-->

@@ -25,6 +25,15 @@ export class AdminComponent implements OnInit {
     private readonly ngf: NgForage
   ) {
     this.roomName = this.acRoute.snapshot.paramMap.get('id');
+    this.acRoute.fragment.subscribe(async (fragment) => {
+      if (fragment) {
+        this.accessToken = new URLSearchParams(fragment).get('access_token');
+        await this.ngf.setItem('accessToken', this.accessToken);
+        await this.router.navigate(['admin']);
+      } else {
+        this.accessToken = await this.ngf.getItem('accessToken');
+      }
+    });
   }
 
   async ngOnInit() {
@@ -39,13 +48,8 @@ export class AdminComponent implements OnInit {
   }
 
   async startGame() {
-    // await this.pouchdb.changeRoomStatus('playing', this.roomName);
-    await this.spotifyService.pauseSpotify();
+    await this.pouchdb.changeRoomStatus('playing', this.roomName);
+    await this.spotifyService.apiPlaySpotify(this.accessToken);
     await this.pouchdb.changeBuzzabilityStatus(true, this.roomName);
   }
-
-  // async spotifyConnect() {
-  //   this.accessToken = await this.spotifyService.apiGetToken();
-  //   await this.ngf.setItem('accessToken', 'this.accessToken');
-  // }
 }

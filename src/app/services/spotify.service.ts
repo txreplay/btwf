@@ -21,9 +21,10 @@ export class SpotifyService {
     return {headers: new HttpHeaders({Authorization: `Bearer ${token}`})};
   }
 
-  public login() {
+  public spotifyConnect() {
     const scopes = new ScopesBuilder().build();
-    const ac: AuthConfig = {
+
+    const authConfig: AuthConfig = {
       client_id: this.client,
       response_type: 'token',
       redirect_uri: 'http://localhost:4204/admin',
@@ -31,7 +32,8 @@ export class SpotifyService {
       show_dialog: true,
       scope: scopes
     };
-    this.authService.configure(ac).authorize();
+
+    this.authService.configure(authConfig).authorize();
   }
 
   apiGetToken() {
@@ -46,23 +48,23 @@ export class SpotifyService {
       .toPromise();
   }
 
-  playSpotify() {
+  apiPlaySpotify(token) {
     return this.http
-      .put(`${this.apiURL}/me/player/play`, {})
+      .put(`${this.apiURL}/me/player/play`, {}, SpotifyService.httpHeaders(token))
       .pipe(map((res: any) => res))
       .toPromise();
   }
 
-  pauseSpotify() {
+  apiPauseSpotify(token) {
     return this.http
-      .put(`${this.apiURL}/me/player/pause`, {})
+      .put(`${this.apiURL}/me/player/pause`, {}, SpotifyService.httpHeaders(token))
       .pipe(map((res: any) => res))
       .toPromise();
   }
 
-  nextSpotify() {
+  apiNextSpotify(token) {
     return this.http
-      .put(`${this.apiURL}/me/player/next`, {})
+      .put(`${this.apiURL}/me/player/next`, {}, SpotifyService.httpHeaders(token))
       .pipe(map((res: any) => res))
       .toPromise();
   }
