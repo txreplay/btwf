@@ -2,6 +2,7 @@ import { Injectable } from '@angular/core';
 import {HttpClient, HttpHeaders} from '@angular/common/http';
 import {map} from 'rxjs/operators';
 import {AuthService, ScopesBuilder, AuthConfig, TokenService} from 'spotify-auth';
+import {environment} from '../../environments/environment';
 
 @Injectable({
   providedIn: 'root',
@@ -9,12 +10,14 @@ import {AuthService, ScopesBuilder, AuthConfig, TokenService} from 'spotify-auth
 export class SpotifyService {
   apiURL: string;
   apiAccountsURL: string;
-  client: string;
+  redirectUri: string;
+  clientId: string;
 
   constructor(private http: HttpClient, private tokenSvc: TokenService, private authService: AuthService) {
     this.apiAccountsURL = 'https://accounts.spotify.com/api';
     this.apiURL = 'https://api.spotify.com/v1';
-    this.client = '58acfbd0300a41739ed8a45788e329eb';
+    this.redirectUri = `${environment.spotifyRedirectUri}`;
+    this.clientId = `${environment.spotifyClientId}`;
   }
 
   static httpHeaders(token) {
@@ -25,27 +28,15 @@ export class SpotifyService {
     const scopes = new ScopesBuilder().build();
 
     const authConfig: AuthConfig = {
-      client_id: this.client,
+      client_id: this.clientId,
       response_type: 'token',
-      redirect_uri: 'http://localhost:4204/admin',
+      redirect_uri: this.redirectUri,
       state: '',
       show_dialog: true,
       scope: scopes
     };
 
     this.authService.configure(authConfig).authorize();
-  }
-
-  apiGetToken() {
-    const httpTokenHeaders = {headers: new HttpHeaders({
-        'Content-Type': 'application/x-www-form-urlencoded',
-        Authorization: `Basic ${btoa(this.client)}`
-    })};
-
-    return this.http
-      .post(`${this.apiAccountsURL}/token`, 'grant_type=client_credentials&scope=user-modify-playback-state', httpTokenHeaders)
-      .pipe(map((res: any) => res.access_token))
-      .toPromise();
   }
 
   apiPlaySpotify(token) {
