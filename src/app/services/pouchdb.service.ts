@@ -10,7 +10,7 @@ export class PouchdbService {
   public remoteDB: PouchDB;
 
   constructor(private readonly ngf: NgForage) {
-    this.remoteDB = new PouchDB('http://134.209.240.247:5984/btwf');
+    this.remoteDB = new PouchDB('https://pouchdb.txreplay.fr:6984/btwf');
     this.localDB = new PouchDB('btwf');
   }
 
