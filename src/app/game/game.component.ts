@@ -1,7 +1,8 @@
 import { Component, OnInit } from '@angular/core';
+import {ActivatedRoute, Router} from '@angular/router';
 
-
-import {User} from '../../models/user.model';
+import {PouchdbService} from '../services/pouchdb.service';
+import {NgForage} from 'ngforage';
 
 @Component({
   selector: 'app-game',
@@ -11,26 +12,23 @@ import {User} from '../../models/user.model';
 
 })
 export class GameComponent implements OnInit {
-  public user: User;
+  public user: any;
+  public roomName: any;
+  public room: any;
 
   constructor(
-    // private readonly ngf: NgForage,
+    private route: ActivatedRoute,
+    public router: Router,
+    public pouchdb: PouchdbService,
+    private readonly ngf: NgForage
   ) {
-
+    this.roomName = this.route.snapshot.paramMap.get('id');
   }
 
   async ngOnInit() {
-    // await this.ngf.getItem('user').then((user: any) => {
-    //   this.user = user;
-    // });
-    //
-    // await this.ngf.getItem('room').then(async (room: any) => {
-    //   await this.room.getOneRoomByName(room);
-    // });
-    //
-    // console.log(this.room);
-    // console.log(this.auth);
-    // console.log(this.user);
+    this.room = await this.pouchdb.getPouchdbDoc(this.roomName);
+    this.room = await this.pouchdb.syncPouch();
+    this.user = await this.pouchdb.getUser();
   }
 
   buzz() {

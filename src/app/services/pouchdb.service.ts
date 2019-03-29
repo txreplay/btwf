@@ -1,5 +1,5 @@
 import { Injectable } from '@angular/core';
-import PouchDB from 'pouchdb';
+import PouchDB from 'pouchdb-browser';
 import {NgForage} from 'ngforage';
 
 @Injectable({
@@ -10,14 +10,8 @@ export class PouchdbService {
   public remoteDB: PouchDB;
 
   constructor(private readonly ngf: NgForage) {
-    this.localDB = new PouchDB('http://134.209.240.247:5984/btwf');
-    this.remoteDB = new PouchDB('btwf');
-
-    this.localDB.sync(this.remoteDB).on('change', () => {
-      console.log('--- SYNC ---');
-    }).on('error', (err) => {
-      console.error(err);
-    });
+    this.remoteDB = new PouchDB('http://134.209.240.247:5984/btwf');
+    this.localDB = new PouchDB('btwf');
   }
 
   static generateId() {
@@ -32,9 +26,7 @@ export class PouchdbService {
     return roomName;
   }
 
-  // ROOM
-
-  createRoom(username) {
+  async createRoom(username) {
     const doc = {
       _id: PouchdbService.generateId(),
       admin: username,
@@ -47,18 +39,6 @@ export class PouchdbService {
 
     return doc;
   }
-
-  async getRoomByName(roomName) {
-    return new Promise((resolve, reject) => {
-      this.localDB.get(roomName).then((doc) => {
-        resolve(doc);
-      }).catch((err) => {
-        reject(err);
-      });
-    });
-  }
-
-  // USER
 
   async createUser(username, admin, room) {
     const doc = {
@@ -90,8 +70,27 @@ export class PouchdbService {
       });
     }).then((response) => {
       console.log(response);
-    }).catch( (err) => {
+    }).catch((err) => {
       console.log(err);
+    });
+  }
+
+  syncPouch() {
+    return new Promise((resolve, reject) => {
+      PouchDB.sync(this.localDB, this.remoteDB, {live: true, retry: true}).on('change', (sync) => {
+        console.log('--- SYNC ---');
+        resolve(sync.change.docs[0]);
+      }).on('error', (err) => {
+        reject(err);
+      });
+    });
+  }
+
+  async getPouchdbDoc(documentId: string) {
+    return new Promise( (resolve, reject) => {
+      this.localDB.get(documentId)
+        .then(pouchdbDoc => resolve(pouchdbDoc) )
+        .catch(pouchdbError => reject(pouchdbError));
     });
   }
 }

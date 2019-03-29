@@ -1,17 +1,9 @@
-<section class="admin" *ngIf="user && user.isAdmin">
+<section class="user">
+  <p>id : {{room._id}}</p>
+  <p>status : {{room.status}}</p>
+  <p>nb players : {{room.players.length - 1}}</p>
 
-  <div *ngFor="let currRoom of room.$room | async">
-    <h3>Salon : {{ currRoom.name }}</h3>
-  </div>
-
-</section>
-
-<section class="user" *ngIf="user && !user.isAdmin">
-  <div *ngFor="let currRoom of room.$room | async">
-    <h3>Salon : {{ currRoom.name }}</h3>
-
-    <div>
-      <button mat-raised-button color="primary" [disabled]="!currRoom.isBuzzable" class="btn" (click)="buzz()">BUZZER</button>
-    </div>
+  <div>
+    <button mat-raised-button color="primary" [disabled]="!room.isBuzzable" class="btn" (click)="buzz()">BUZZER</button>
   </div>
 </section>

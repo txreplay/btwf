@@ -14,7 +14,6 @@ import {NgForage} from 'ngforage';
   providers: []
 })
 export class AdminComponent implements OnInit {
-  public accessToken: string;
   public user: any;
   public roomName: any;
   public room: any;
@@ -27,40 +26,25 @@ export class AdminComponent implements OnInit {
     private readonly ngf: NgForage
   ) {
     this.roomName = this.route.snapshot.paramMap.get('id');
-    this.room = this.pouchdb.getRoomByName(this.roomName);
 
   }
 
   async ngOnInit() {
-    this.room.then(async (room: any) => {
-      this.user = await this.pouchdb.getUser();
-
-      console.log(room);
-      console.log(this.user);
-
-      if (room.admin !== this.user.username) {
-        this.router.navigate(['homepage']);
-      }
-    }).catch(() => {
-      this.router.navigate(['homepage']);
-    });
-
-    this.ngf.getItem('accessToken').then((accessToken: any) => {
-      this.accessToken = accessToken;
-    });
+    this.room = await this.pouchdb.getPouchdbDoc(this.roomName);
+    this.room = await this.pouchdb.syncPouch();
+    this.user = await this.pouchdb.getUser();
   }
 
-  spotifyConnect() {
-    this.spotify.apiGetToken().subscribe(async (result: any) => {
-      this.accessToken = result;
-      await this.ngf.setItem('accessToken', result);
-    });
-  }
-
-  search() {
-    this.spotify.search('booba', this.accessToken).subscribe((result) => {
-      console.log(result);
-    });
-  }
-
+  // spotifyConnect() {
+  //   this.spotify.apiGetToken().subscribe(async (result: any) => {
+  //     this.accessToken = result;
+  //     await this.ngf.setItem('accessToken', result);
+  //   });
+  // }
+  //
+  // search() {
+  //   this.spotify.search('booba', this.accessToken).subscribe((result) => {
+  //     console.log(result);
+  //   });
+  // }
 }

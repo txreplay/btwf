@@ -44,27 +44,20 @@ export class HomepageComponent implements OnInit {
   }
 
   generateForms() {
-    this.formCreateRoom = this.fb.group( {
-      username: [null, Validators.required]
-    });
-
-    this.formGetRoom = this.fb.group( {
-      roomName: [null, Validators.required]
-    });
-
-    this.formJoinRoom = this.fb.group( {
-      username: [null, Validators.required]
-    });
+    this.formCreateRoom = this.fb.group( {username: [null, Validators.required]});
+    this.formGetRoom = this.fb.group( {roomName: [null, Validators.required]});
+    this.formJoinRoom = this.fb.group( {username: [null, Validators.required]});
   }
 
   async onSubmitCreateRoom() {
     const username = this.formCreateRoom.value.username;
 
     if (username) {
-      const room = this.pouchdb.createRoom(username);
+      const room: any = await this.pouchdb.createRoom(username);
+      console.log(room);
       await this.pouchdb.createUser(username, true, room._id);
 
-      this.router.navigate(['admin', {id: room._id}]);
+      await this.router.navigate(['admin', {id: room._id}]);
     }
   }
 
@@ -72,7 +65,7 @@ export class HomepageComponent implements OnInit {
     const roomName = this.formGetRoom.value.roomName;
 
     if (roomName) {
-      await this.pouchdb.getRoomByName(roomName).then(async (room: any) => {
+      await this.pouchdb.getPouchdbDoc(roomName).then(async (room: any) => {
         if (room.status !== 'waiting') {
           this.error = 'Partie déjà commencée ou terminée';
         }
@@ -91,7 +84,8 @@ export class HomepageComponent implements OnInit {
     if (username) {
       await this.pouchdb.createUser(username, false, this.roomName);
       this.pouchdb.userJoinRoom(username, this.roomName);
-      await this.router.navigate(['/game']);
+
+      await this.router.navigate(['game', {id: this.roomName}]);
     }
   }
 }

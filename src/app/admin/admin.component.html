@@ -1,14 +1,12 @@
 <section class="admin">
+  <p>id : {{room._id}}</p>
+  <p>status : {{room.status}}</p>
 
-  <div *ngIf="!accessToken">
-    <button mat-raised-button color="primary" class="btn" (click)="spotifyConnect()">Spotify Connect</button>
+  <ul *ngIf="room && room.players.length > 0">
+    <li *ngFor="let player of room.players">{{player}} <span *ngIf="room.admin == player">(admin)</span></li>
+  </ul>
+
+  <div>
+    <button mat-raised-button color="primary" [disabled]="!room.players.length >= 3" class="btn" (click)="start()">START</button>
   </div>
-
-  <div *ngIf="accessToken">
-    <button mat-raised-button color="primary" class="btn" (click)="search()">Search</button>
-  </div>
-
-  {{room|async|json}}
-
-
 </section>
