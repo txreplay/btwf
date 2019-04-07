@@ -1,19 +1,12 @@
-import {Component, OnInit} from '@angular/core';
-import {PouchdbService} from './services/pouchdb.service';
+import {Component} from '@angular/core';
 
 @Component({
   selector: 'app-root',
   templateUrl: './app.component.html',
   styleUrls: ['./app.component.css']
 })
-export class AppComponent implements OnInit {
+export class AppComponent {
 
-  constructor(public pouchdb: PouchdbService) {
-
-  }
-
-  async ngOnInit() {
-    await this.pouchdb.syncPouch();
-  }
+  constructor() {}
 
 }

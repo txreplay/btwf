@@ -4,6 +4,7 @@ import {SpotifyService} from '../services/spotify.service';
 import {PouchdbService} from '../services/pouchdb.service';
 import {ActivatedRoute, Router} from '@angular/router';
 import {NgForage} from 'ngforage';
+import PouchDB from 'pouchdb-browser';
 
 @Component({
   selector: 'app-admin',
@@ -34,6 +35,8 @@ export class AdminComponent implements OnInit {
         this.accessToken = await this.ngf.getItem('accessToken');
       }
     });
+
+    this.pouchDbSync();
   }
 
   async ngOnInit() {
@@ -43,13 +46,35 @@ export class AdminComponent implements OnInit {
     }
 
     this.room = await this.pouchdb.getPouchdbDoc(this.roomName);
-    this.room = await this.pouchdb.syncPouch();
     this.user = await this.pouchdb.getUser();
+    console.log(this.room);
   }
 
   async startGame() {
     await this.pouchdb.changeRoomStatus('playing', this.roomName);
-    await this.spotifyService.apiPlaySpotify(this.accessToken);
     await this.pouchdb.changeBuzzabilityStatus(true, this.roomName);
+  }
+
+  async nextSong() {
+    await this.pouchdb.changeBuzzabilityStatus(true, this.roomName);
+  }
+
+  pouchDbSync() {
+    PouchDB.sync(this.pouchdb.localDB, this.pouchdb.remoteDB, {live: true, retry: true}).on('change', async (sync) => {
+      console.log('--- SYNC --- ');
+      const accessToken = await this.ngf.getItem('accessToken');
+      const room = sync.change.docs[0];
+      if (accessToken) {
+        try {
+          (room.isBuzzable) ? await this.spotifyService.apiPlaySpotify(accessToken) : await this.spotifyService.apiPauseSpotify(accessToken);
+        } catch (e) {
+          await this.spotifyService.spotifyConnect();
+        }
+      }
+      this.room = room;
+      console.log(room);
+    }).on('error', (err) => {
+      console.log(err);
+    });
   }
 }

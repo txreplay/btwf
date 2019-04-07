@@ -26,17 +26,6 @@ export class PouchdbService {
     return roomName;
   }
 
-  syncPouch() {
-    return new Promise((resolve, reject) => {
-      PouchDB.sync(this.localDB, this.remoteDB, {live: true, retry: true}).on('change', (sync) => {
-        console.log('--- SYNC ---');
-        resolve(sync.change.docs[0]);
-      }).on('error', (err) => {
-        reject(err);
-      });
-    });
-  }
-
   async getPouchdbDoc(documentId: string) {
     return new Promise( (resolve, reject) => {
       this.localDB.get(documentId)
@@ -51,7 +40,7 @@ export class PouchdbService {
       admin: username,
       status: 'waiting',
       isBuzzable: false,
-      players: [username]
+      players: []
     };
 
     this.localDB.put(doc);

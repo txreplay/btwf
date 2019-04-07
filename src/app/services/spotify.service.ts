@@ -60,6 +60,10 @@ export class SpotifyService {
       .toPromise();
   }
 
+  checkTokenValidity() {
+
+  }
+
   search(query, token) {
     return this.http
       .get(`${this.apiURL}/search?q=${query}&type=track`, SpotifyService.httpHeaders(token))

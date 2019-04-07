@@ -9,7 +9,9 @@
   <div *ngIf="room.status == 'waiting'">
     <button mat-raised-button color="primary" *ngIf="!accessToken" class="btn" (click)="spotifyService.spotifyConnect()">Spotify Connect</button>
     <br>
-    <button mat-raised-button color="primary" [disabled]="room.players.length <= 2" class="btn" (click)="startGame()">START</button>
-    <!--<button mat-raised-button color="primary" [disabled]="!accessToken" class="btn" (click)="search()">Search</button>-->
+    <!--<button mat-raised-button color="primary" [disabled]="room.players.length <= 2" class="btn" (click)="startGame()">START</button>-->
+    <button mat-raised-button color="primary" [disabled]="room.players.length <= 1" class="btn" (click)="startGame()">START</button>
   </div>
+
+  <button mat-raised-button color="primary" [disabled]="room.isBuzzable" class="btn" (click)="nextSong()">Next Song</button>
 </section>

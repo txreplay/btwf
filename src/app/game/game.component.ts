@@ -2,7 +2,7 @@ import { Component, OnInit } from '@angular/core';
 import {ActivatedRoute, Router} from '@angular/router';
 
 import {PouchdbService} from '../services/pouchdb.service';
-import {NgForage} from 'ngforage';
+import PouchDB from 'pouchdb-browser';
 
 @Component({
   selector: 'app-game',
@@ -20,19 +20,29 @@ export class GameComponent implements OnInit {
     private route: ActivatedRoute,
     public router: Router,
     public pouchdb: PouchdbService,
-    private readonly ngf: NgForage
   ) {
     this.roomName = this.route.snapshot.paramMap.get('id');
+
+    this.pouchDbSync();
   }
 
   async ngOnInit() {
     this.room = await this.pouchdb.getPouchdbDoc(this.roomName);
-    this.room = await this.pouchdb.syncPouch();
+    console.log(this.room);
     this.user = await this.pouchdb.getUser();
   }
 
-  buzz() {
-
+  async buzz() {
+    await this.pouchdb.changeBuzzabilityStatus(false, this.roomName);
   }
 
+  pouchDbSync() {
+    PouchDB.sync(this.pouchdb.localDB, this.pouchdb.remoteDB, {live: true, retry: true}).on('change', (sync) => {
+      console.log('--- SYNC --- ');
+      console.log(sync.change.docs[0]);
+      this.room = sync.change.docs[0];
+    }).on('error', (err) => {
+      console.log(err);
+    });
+  }
 }
