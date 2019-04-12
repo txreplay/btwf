@@ -1,4 +1,4 @@
-import { Component, OnInit } from '@angular/core';
+import {Component, NgZone, OnInit} from '@angular/core';
 import {ActivatedRoute, Router} from '@angular/router';
 
 import {PouchdbService} from '../services/pouchdb.service';
@@ -20,6 +20,7 @@ export class GameComponent implements OnInit {
     private route: ActivatedRoute,
     public router: Router,
     public pouchdb: PouchdbService,
+    private zone: NgZone
   ) {
     this.roomName = this.route.snapshot.paramMap.get('id');
 
@@ -37,10 +38,11 @@ export class GameComponent implements OnInit {
   }
 
   pouchDbSync() {
-    PouchDB.sync(this.pouchdb.localDB, this.pouchdb.remoteDB, {live: true, retry: true}).on('change', (sync) => {
-      console.log('--- SYNC --- ');
-      console.log(sync.change.docs[0]);
-      this.room = sync.change.docs[0];
+    PouchDB.sync(this.pouchdb.localDB, this.pouchdb.remoteDB, {live: true, retry: true}).on('change', async (sync) => {
+      this.zone.run(() => {
+        console.log('--- SYNC --- ');
+        this.room = sync.change.docs[0];
+      });
     }).on('error', (err) => {
       console.log(err);
     });

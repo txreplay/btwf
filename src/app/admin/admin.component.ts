@@ -1,4 +1,4 @@
-import { Component, OnInit } from '@angular/core';
+import {Component, NgZone, OnInit} from '@angular/core';
 
 import {SpotifyService} from '../services/spotify.service';
 import {PouchdbService} from '../services/pouchdb.service';
@@ -23,7 +23,8 @@ export class AdminComponent implements OnInit {
     public router: Router,
     public spotifyService: SpotifyService,
     public pouchdb: PouchdbService,
-    private readonly ngf: NgForage
+    private readonly ngf: NgForage,
+    private zone: NgZone
   ) {
     this.roomName = this.acRoute.snapshot.paramMap.get('id');
     this.acRoute.fragment.subscribe(async (fragment) => {
@@ -61,19 +62,20 @@ export class AdminComponent implements OnInit {
 
   pouchDbSync() {
     PouchDB.sync(this.pouchdb.localDB, this.pouchdb.remoteDB, {live: true, retry: true}).on('change', async (sync) => {
-      console.log('--- SYNC --- ');
-      const room = sync.change.docs[0];
-      const accessToken = await this.ngf.getItem('accessToken');
+      await this.zone.run(async () => {
+        console.log('--- SYNC --- ');
+        const room = sync.change.docs[0];
+        this.room = room;
+        const accessToken = await this.ngf.getItem('accessToken');
 
-      if (accessToken) {
-        try {
-          (room.isBuzzable) ? await this.spotifyService.apiPlaySpotify(accessToken) : await this.spotifyService.apiPauseSpotify(accessToken);
-        } catch (e) {
-          await this.spotifyService.spotifyConnect();
+        if (accessToken) {
+          try {
+            (room.isBuzzable) ? await this.spotifyService.apiPlaySpotify(accessToken) : await this.spotifyService.apiPauseSpotify(accessToken);
+          } catch (e) {
+            await this.spotifyService.spotifyConnect();
+          }
         }
-      }
-      this.room = room;
-      console.log(room);
+      });
     }).on('error', (err) => {
       console.log(err);
     });
