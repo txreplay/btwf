@@ -1,6 +1,7 @@
 import { Component, OnInit } from '@angular/core';
 import {FormBuilder, FormGroup, Validators} from '@angular/forms';
 import {Router} from '@angular/router';
+import PouchDB from 'pouchdb-browser';
 
 import {PouchdbService} from '../services/pouchdb.service';
 
@@ -27,6 +28,7 @@ export class HomepageComponent implements OnInit {
   ) {}
 
   async ngOnInit() {
+    this.pouchDbSync();
     this.generateForms();
   }
 
@@ -66,12 +68,14 @@ export class HomepageComponent implements OnInit {
 
     if (roomName) {
       await this.pouchdb.getPouchdbDoc(roomName).then(async (room: any) => {
+        console.log(room);
         if (room.status !== 'waiting') {
           this.error = 'Partie déjà commencée ou terminée';
         }
 
         this.roomName = roomName;
-      }).catch(() => {
+      }).catch((e) => {
+        console.error(e);
         this.error = 'Ce salon n\'existe pas.';
       });
 
@@ -87,5 +91,13 @@ export class HomepageComponent implements OnInit {
 
       await this.router.navigate(['game', {id: this.roomName}]);
     }
+  }
+
+  pouchDbSync() {
+    PouchDB.sync(this.pouchdb.localDB, this.pouchdb.remoteDB, {live: true, retry: true}).on('change', async (sync) => {
+      console.log('--- SYNC --- ');
+    }).on('error', (err) => {
+      console.log(err);
+    });
   }
 }

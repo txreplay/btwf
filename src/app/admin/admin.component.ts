@@ -62,8 +62,9 @@ export class AdminComponent implements OnInit {
   pouchDbSync() {
     PouchDB.sync(this.pouchdb.localDB, this.pouchdb.remoteDB, {live: true, retry: true}).on('change', async (sync) => {
       console.log('--- SYNC --- ');
-      const accessToken = await this.ngf.getItem('accessToken');
       const room = sync.change.docs[0];
+      const accessToken = await this.ngf.getItem('accessToken');
+
       if (accessToken) {
         try {
           (room.isBuzzable) ? await this.spotifyService.apiPlaySpotify(accessToken) : await this.spotifyService.apiPauseSpotify(accessToken);

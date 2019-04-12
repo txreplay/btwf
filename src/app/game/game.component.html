@@ -1,7 +1,7 @@
 <section class="user" *ngIf="room">
   <p>id : {{room._id}}</p>
   <p>status : {{room.status}}</p>
-  <p>nb players : {{room.players.length - 1}}</p>
+  <p>nb players : {{room.players.length}}</p>
 
   <div>
     <button mat-raised-button color="primary" [disabled]="!room.isBuzzable" class="btn" (click)="buzz()">BUZZER</button>
