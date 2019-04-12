@@ -7,8 +7,8 @@ import {environment} from '../../environments/environment';
   providedIn: 'root',
 })
 export class PouchdbService {
-  public localDb: PouchDB;
-  public remoteDb: PouchDB;
+  public localDb: any;
+  public remoteDb: any;
   public localDbUrl: string;
   public remoteDbUrl: string;
   public options: {};
