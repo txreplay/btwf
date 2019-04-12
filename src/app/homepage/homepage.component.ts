@@ -13,8 +13,9 @@ import {PouchdbService} from '../services/pouchdb.service';
 export class HomepageComponent implements OnInit {
   public action: 'join'|'create';
   public error: string;
-  public user: any;
+
   public roomName: string;
+  public user: {};
 
   private formCreateRoom: FormGroup;
   private formGetRoom: FormGroup;
@@ -22,9 +23,8 @@ export class HomepageComponent implements OnInit {
 
   constructor(
     private fb: FormBuilder,
-    public router: Router,
-    public pouchdb: PouchdbService,
-
+    private router: Router,
+    private pouchdb: PouchdbService,
   ) {}
 
   async ngOnInit() {
@@ -34,15 +34,6 @@ export class HomepageComponent implements OnInit {
 
   setAction(action) {
     this.action = action;
-  }
-
-  async reset() {
-    this.action = null;
-    this.error = null;
-    this.formCreateRoom.reset();
-    this.formGetRoom.reset();
-    this.formJoinRoom.reset();
-    // await this.ngf.clear();
   }
 
   generateForms() {
@@ -56,7 +47,6 @@ export class HomepageComponent implements OnInit {
 
     if (username) {
       const room: any = await this.pouchdb.createRoom(username);
-      console.log(room);
       await this.pouchdb.createUser(username, true, room._id);
 
       await this.router.navigate(['admin', {id: room._id}]);
@@ -94,7 +84,7 @@ export class HomepageComponent implements OnInit {
   }
 
   pouchDbSync() {
-    PouchDB.sync(this.pouchdb.localDB, this.pouchdb.remoteDB, {live: true, retry: true}).on('change', async (sync) => {
+    PouchDB.sync(this.pouchdb.localDbUrl, this.pouchdb.localDbUrl, {live: true, retry: true}).on('change', async () => {
       console.log('--- SYNC --- ');
     }).on('error', (err) => {
       console.log(err);

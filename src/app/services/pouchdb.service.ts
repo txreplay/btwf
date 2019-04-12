@@ -1,17 +1,24 @@
 import { Injectable } from '@angular/core';
 import PouchDB from 'pouchdb-browser';
 import {NgForage} from 'ngforage';
+import {environment} from '../../environments/environment';
 
 @Injectable({
   providedIn: 'root',
 })
 export class PouchdbService {
-  public localDB: PouchDB;
-  public remoteDB: PouchDB;
+  public localDb: PouchDB;
+  public remoteDb: PouchDB;
+  public localDbUrl: string;
+  public remoteDbUrl: string;
+  public options: {};
 
   constructor(private readonly ngf: NgForage) {
-    this.remoteDB = new PouchDB('https://pouchdb.txreplay.fr:6984/btwf');
-    this.localDB = new PouchDB('btwf');
+    this.localDbUrl = environment.localPouchDbUrl;
+    this.remoteDbUrl = environment.remotePouchDbUrl;
+    this.localDb = new PouchDB(environment.localPouchDbUrl);
+    this.remoteDb = new PouchDB(environment.remotePouchDbUrl);
+    this.options = {live: true, retry: true};
   }
 
   static generateId() {
@@ -23,18 +30,20 @@ export class PouchdbService {
       roomName = roomName + LETTERS[Math.floor(Math.random() * LETTERS.length)];
     }
 
+    // TODO : Check if ID doesn't already exist
+
     return roomName;
   }
 
   async getPouchdbDoc(documentId: string) {
     return new Promise( (resolve, reject) => {
-      this.localDB.get(documentId)
+      this.localDb.get(documentId)
         .then(pouchdbDoc => resolve(pouchdbDoc) )
         .catch(pouchdbError => reject(pouchdbError));
     });
   }
 
-  async createRoom(username) {
+  async createRoom(username: string) {
     const doc = {
       _id: PouchdbService.generateId(),
       admin: username,
@@ -43,12 +52,12 @@ export class PouchdbService {
       players: []
     };
 
-    this.localDB.put(doc);
+    await this.localDb.put(doc);
 
     return doc;
   }
 
-  async createUser(username, admin, room) {
+  async createUser(username: string, admin: boolean, room: string) {
     const doc = {
       username,
       admin,
@@ -62,14 +71,14 @@ export class PouchdbService {
     return await this.ngf.getItem('user');
   }
 
-  userJoinRoom(username, roomName) {
+  userJoinRoom(username: string, roomName: string) {
     return new Promise((resolve, reject) => {
       const self = this;
 
-      this.localDB.get(roomName).then((doc) => {
+      this.localDb.get(roomName).then((doc) => {
         doc.players.push(username);
 
-        return self.localDB.put({
+        return self.localDb.put({
           _id: roomName,
           _rev: doc._rev,
           admin: doc.admin,
@@ -85,14 +94,14 @@ export class PouchdbService {
     });
   }
 
-  changeBuzzabilityStatus(isBuzzable, roomName) {
+  changeBuzzabilityStatus(isBuzzable: boolean, roomName: string) {
     return new Promise((resolve, reject) => {
       const self = this;
 
-      this.localDB.get(roomName).then((doc) => {
+      this.localDb.get(roomName).then((doc) => {
         doc.isBuzzable = isBuzzable;
 
-        return self.localDB.put({
+        return self.localDb.put({
           _id: roomName,
           _rev: doc._rev,
           admin: doc.admin,
@@ -108,14 +117,14 @@ export class PouchdbService {
     });
   }
 
-  changeRoomStatus(status, roomName) {
+  changeRoomStatus(status: string, roomName: string) {
     return new Promise((resolve, reject) => {
       const self = this;
 
-      this.localDB.get(roomName).then((doc) => {
+      this.localDb.get(roomName).then((doc) => {
         doc.status = (status);
 
-        return self.localDB.put({
+        return self.localDb.put({
           _id: roomName,
           _rev: doc._rev,
           admin: doc.admin,

@@ -9,10 +9,7 @@ header h1 {
   line-height: 45px;
 }
 
-button.goBack.hide {
-  display: none !important;
-}
-
-.goBack {
-  font-size: 2em;
+header h1 .logo {
+  color: white;
+  text-decoration: none;
 }

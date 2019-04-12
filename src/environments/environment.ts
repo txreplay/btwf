@@ -4,8 +4,12 @@
 
 export const environment = {
   production: false,
+
   spotifyRedirectUri: 'http://localhost:4204/admin',
-  spotifyClientId: '58acfbd0300a41739ed8a45788e329eb'
+  spotifyClientId: '58acfbd0300a41739ed8a45788e329eb',
+
+  localPouchDbUrl: 'https://pouchdb.txreplay.fr:6984/btwf',
+  remotePouchDbUrl: 'btwf',
 };
 
 /*

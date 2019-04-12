@@ -1,10 +1,10 @@
 import {Component, NgZone, OnInit} from '@angular/core';
-
-import {SpotifyService} from '../services/spotify.service';
-import {PouchdbService} from '../services/pouchdb.service';
 import {ActivatedRoute, Router} from '@angular/router';
 import {NgForage} from 'ngforage';
 import PouchDB from 'pouchdb-browser';
+
+import {SpotifyService} from '../services/spotify.service';
+import {PouchdbService} from '../services/pouchdb.service';
 
 @Component({
   selector: 'app-admin',
@@ -13,18 +13,19 @@ import PouchDB from 'pouchdb-browser';
   providers: []
 })
 export class AdminComponent implements OnInit {
-  public user: any;
   public roomName: string;
   public room: any;
+  public user: any;
+
   public accessToken: string;
 
   constructor(
     private acRoute: ActivatedRoute,
-    public router: Router,
-    public spotifyService: SpotifyService,
-    public pouchdb: PouchdbService,
+    private router: Router,
+    private spotifyService: SpotifyService,
+    private pouchdb: PouchdbService,
+    private zone: NgZone,
     private readonly ngf: NgForage,
-    private zone: NgZone
   ) {
     this.roomName = this.acRoute.snapshot.paramMap.get('id');
     this.acRoute.fragment.subscribe(async (fragment) => {
@@ -48,7 +49,6 @@ export class AdminComponent implements OnInit {
 
     this.room = await this.pouchdb.getPouchdbDoc(this.roomName);
     this.user = await this.pouchdb.getUser();
-    console.log(this.room);
   }
 
   async startGame() {
@@ -61,10 +61,10 @@ export class AdminComponent implements OnInit {
   }
 
   pouchDbSync() {
-    PouchDB.sync(this.pouchdb.localDB, this.pouchdb.remoteDB, {live: true, retry: true}).on('change', async (sync) => {
+    PouchDB.sync(this.pouchdb.localDbUrl, this.pouchdb.remoteDbUrl, {live: true, retry: true}).on('change', async (sync) => {
       await this.zone.run(async () => {
         console.log('--- SYNC --- ');
-        const room = sync.change.docs[0];
+        const room: any = sync.change.docs[0];
         this.room = room;
         const accessToken = await this.ngf.getItem('accessToken');
 
@@ -77,7 +77,7 @@ export class AdminComponent implements OnInit {
         }
       });
     }).on('error', (err) => {
-      console.log(err);
+      console.error(err);
     });
   }
 }
