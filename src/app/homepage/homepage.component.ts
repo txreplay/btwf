@@ -77,11 +77,13 @@ export class HomepageComponent implements OnInit {
   async onSubmitJoinRoom() {
     const username = this.formJoinRoom.value.username;
 
-    if (username) {
+    if (!username.includes('#') && username) {
       await this.pouchdb.createUser(username, false, this.roomName);
       await this.pouchdb.userJoinRoom(username, this.roomName);
 
       await this.router.navigate(['game', {id: this.roomName}]);
+    } else {
+      this.error = 'Votre pseudo ne doit pas contenir le symbole "#"';
     }
   }
 
