@@ -1,4 +1,6 @@
 import { Component } from '@angular/core';
+import {NgForage} from 'ngforage';
+import {Router} from '@angular/router';
 
 @Component({
   selector: 'app-header',
@@ -7,7 +9,12 @@ import { Component } from '@angular/core';
 })
 export class HeaderComponent {
 
-  constructor() {
+  constructor(private readonly ngf: NgForage, private router: Router) {
   }
 
+  async reset() {
+    await this.ngf.clear();
+    await this.router.navigate(['/']);
+    location.reload();
+  }
 }

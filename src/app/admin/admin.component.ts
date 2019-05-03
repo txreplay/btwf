@@ -64,11 +64,13 @@ export class AdminComponent implements OnInit {
       await this.pouchdb.addPointToPlayer(this.room.lastBuzzer, this.roomName);
     }
 
+    await this.pouchdb.resetLastBuzzer(this.roomName);
     await this.pouchdb.changeBuzzabilityStatus(true, this.user.username, this.roomName);
     await this.spotifyService.apiNextSpotify(this.accessToken);
   }
 
   async answerIsWrong() {
+    await this.pouchdb.resetLastBuzzer(this.roomName);
     await this.pouchdb.changeBuzzabilityStatus(true, this.user.username, this.roomName);
     await this.spotifyService.apiPlaySpotify(this.accessToken);
   }
@@ -95,7 +97,7 @@ export class AdminComponent implements OnInit {
           try {
             (room.isBuzzable) ? await this.spotifyService.apiPlaySpotify(accessToken) : await this.spotifyService.apiPauseSpotify(accessToken);
           } catch (e) {
-            await this.spotifyService.spotifyConnect();
+            console.error(e);
           }
         }
       });

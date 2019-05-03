@@ -9,10 +9,11 @@
 
   <div *ngIf="room.status == 'waiting'">
     <button mat-raised-button color="primary" *ngIf="!accessToken" class="btn" (click)="spotifyService.spotifyConnect()">Spotify Connect</button>
-    <button mat-raised-button color="primary" *ngIf="accessToken" [disabled]="room.players.length <= 1 && !accessToken" class="btn" (click)="startGame()">START</button>
+    <button mat-raised-button color="primary" *ngIf="accessToken" [disabled]="room.players.length <= 1" class="btn" (click)="startGame()">START</button>
   </div>
 
   <div *ngIf="room.status == 'playing'">
+    <p *ngIf="room.lastBuzzer">Buzzé par : {{ room.lastBuzzer }}</p>
     <button mat-raised-button class="mini-btn" color="accent" [disabled]="room.isBuzzable" (click)="answerIsCorrect()">Correct</button>
     <button mat-raised-button class="mini-btn" color="warn" [disabled]="room.isBuzzable" (click)="answerIsWrong()">Wrong</button>
   </div>

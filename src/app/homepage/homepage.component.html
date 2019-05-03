@@ -1,18 +1,10 @@
-<section class="reset" *ngIf="action == 'create' || action == 'join'">
-  <button mat-icon-button color="secondary" (click)="reset()"><mat-icon>chevron_left</mat-icon></button>
-</section>
-
 <div class="container">
   <section class="choice" *ngIf="!action">
     <button mat-raised-button class="btn" color="primary" (click)="setAction('create')">Créer une partie</button>
     <button mat-raised-button class="btn" color="warn" (click)="setAction('join')">Rejoindre une partie</button>
   </section>
 
-  <section class="error" *ngIf="error">
-    <p class="error">{{error}}</p>
-  </section>
-
-  <section class="createRoom" *ngIf="action == 'create' && !error">
+  <section class="createRoom" *ngIf="action == 'create'">
     <form [formGroup]="formCreateRoom" (ngSubmit)="onSubmitCreateRoom()">
       <mat-form-field>
         <mat-label>Votre pseudo</mat-label>
@@ -25,7 +17,7 @@
     </form>
   </section>
 
-  <section class="joinRoom" *ngIf="action == 'join' && !error">
+  <section class="joinRoom" *ngIf="action == 'join'">
     <!-- GET ROOM -->
     <form [formGroup]="formGetRoom" (ngSubmit)="onSubmitGetRoom()" *ngIf="!roomName">
       <mat-form-field>
@@ -52,5 +44,8 @@
       </form>
     </div>
 
+    <section class="error" *ngIf="error">
+      <p class="error">{{error}}</p>
+    </section>
   </section>
 </div>

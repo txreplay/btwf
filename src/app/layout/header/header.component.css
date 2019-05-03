@@ -5,8 +5,18 @@ header {
   height: 45px;
 }
 
-header h1 {
+header button {
+  display: inline-block;
+  width: 45px;
+  height: 45px;
   line-height: 45px;
+  float: left;
+}
+
+header h1 {
+  display: inline-block;
+  line-height: 45px;
+  margin-left: -45px;
 }
 
 header h1 .logo {

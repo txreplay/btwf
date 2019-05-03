@@ -73,6 +73,29 @@ export class PouchdbService {
     return await this.ngf.getItem('user');
   }
 
+  resetLastBuzzer(roomName: string) {
+    return new Promise((resolve, reject) => {
+      const self = this;
+
+      this.localDb.get(roomName).then((doc) => {
+
+        return self.localDb.put({
+          _id: roomName,
+          _rev: doc._rev,
+          admin: doc.admin,
+          status: doc.status,
+          isBuzzable: doc.isBuzzable,
+          lastBuzzer: '',
+          players: doc.players
+        });
+      }).then((response) => {
+        resolve(response);
+      }).catch((err) => {
+        reject(err);
+      });
+    });
+  }
+
   userJoinRoom(username: string, roomName: string) {
     return new Promise((resolve, reject) => {
       const self = this;

@@ -55,16 +55,17 @@ export class HomepageComponent implements OnInit {
   }
 
   async onSubmitGetRoom() {
-    const roomName = this.formGetRoom.value.roomName;
+    let roomName = this.formGetRoom.value.roomName;
 
     if (roomName) {
+      roomName = roomName.toUpperCase();
       await this.pouchdb.getPouchdbDoc(roomName).then(async (room: any) => {
         console.log(room);
         if (room.status !== 'waiting') {
           this.error = 'Partie déjà commencée ou terminée';
+        } else {
+          this.roomName = roomName;
         }
-
-        this.roomName = roomName;
       }).catch((e) => {
         console.error(e);
         this.error = 'Ce salon n\'existe pas.';
