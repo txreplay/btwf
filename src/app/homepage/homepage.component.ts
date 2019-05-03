@@ -1,4 +1,4 @@
-import { Component, OnInit } from '@angular/core';
+import {Component, NgZone, OnInit} from '@angular/core';
 import {FormBuilder, FormGroup, Validators} from '@angular/forms';
 import {Router} from '@angular/router';
 import PouchDB from 'pouchdb-browser';
@@ -24,6 +24,7 @@ export class HomepageComponent implements OnInit {
   constructor(
     private fb: FormBuilder,
     private router: Router,
+    private zone: NgZone,
     private pouchdb: PouchdbService,
   ) {}
 
@@ -84,8 +85,10 @@ export class HomepageComponent implements OnInit {
   }
 
   pouchDbSync() {
-    PouchDB.sync(this.pouchdb.localDbUrl, this.pouchdb.localDbUrl, {live: true, retry: true}).on('change', async () => {
-      console.log('--- SYNC --- ');
+    PouchDB.sync(this.pouchdb.localDbUrl, this.pouchdb.remoteDbUrl, {live: true, retry: true}).on('change', async (sync) => {
+      await this.zone.run(async () => {
+        console.log('--- SYNC --- ');
+      });
     }).on('error', (err) => {
       console.log(err);
     });

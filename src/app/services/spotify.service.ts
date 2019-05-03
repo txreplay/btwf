@@ -55,7 +55,7 @@ export class SpotifyService {
 
   apiNextSpotify(token) {
     return this.http
-      .put(`${this.apiURL}/me/player/next`, {}, SpotifyService.httpHeaders(token))
+      .post(`${this.apiURL}/me/player/next`, {}, SpotifyService.httpHeaders(token))
       .pipe(map((res: any) => res))
       .toPromise();
   }

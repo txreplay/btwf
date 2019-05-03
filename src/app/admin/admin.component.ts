@@ -16,6 +16,7 @@ export class AdminComponent implements OnInit {
   public roomName: string;
   public room: any;
   public user: any;
+  public leaderboard: Array<any> = [];
 
   public accessToken: string;
 
@@ -49,15 +50,36 @@ export class AdminComponent implements OnInit {
 
     this.room = await this.pouchdb.getPouchdbDoc(this.roomName);
     this.user = await this.pouchdb.getUser();
+    this.updateLeaderboard();
   }
 
   async startGame() {
     await this.pouchdb.changeRoomStatus('playing', this.roomName);
-    await this.pouchdb.changeBuzzabilityStatus(true, this.roomName);
+    await this.pouchdb.changeBuzzabilityStatus(true, this.user.username, this.roomName);
+    await this.spotifyService.apiPlaySpotify(this.accessToken);
   }
 
-  async nextSong() {
-    await this.pouchdb.changeBuzzabilityStatus(true, this.roomName);
+  async answerIsCorrect() {
+    if (this.room.lastBuzzer) {
+      await this.pouchdb.addPointToPlayer(this.room.lastBuzzer, this.roomName);
+    }
+
+    await this.pouchdb.changeBuzzabilityStatus(true, this.user.username, this.roomName);
+    await this.spotifyService.apiNextSpotify(this.accessToken);
+  }
+
+  async answerIsWrong() {
+    await this.pouchdb.changeBuzzabilityStatus(true, this.user.username, this.roomName);
+    await this.spotifyService.apiPlaySpotify(this.accessToken);
+  }
+
+  updateLeaderboard() {
+    this.leaderboard = [];
+    this.room.players.map((player) => {
+      const playerArr = player.split('#');
+      this.leaderboard.push({name: playerArr[0], score: playerArr[1]});
+    });
+    this.leaderboard.sort((a, b) => b.score - a.score);
   }
 
   pouchDbSync() {
@@ -66,6 +88,7 @@ export class AdminComponent implements OnInit {
         console.log('--- SYNC --- ');
         const room: any = sync.change.docs[0];
         this.room = room;
+        this.updateLeaderboard();
         const accessToken = await this.ngf.getItem('accessToken');
 
         if (accessToken) {

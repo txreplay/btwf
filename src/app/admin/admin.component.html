@@ -1,16 +1,20 @@
 <section class="admin" *ngIf="room">
-  <p>id : {{room._id}}</p>
-  <p>status : {{room.status}}</p>
+  <p>ID du salon : {{room._id}}</p>
 
-  <ul *ngIf="room && room.players.length > 0">
-    <li *ngFor="let player of room.players">{{player}} <span *ngIf="room.admin == player">(admin)</span></li>
-  </ul>
+  <mat-list *ngIf="room && room.players.length > 0">
+    <mat-list-item *ngFor="let player of leaderboard; let i = index">
+      #{{i+1}} - {{player.name}} ({{player.score}} point<span *ngIf="player.score > 1">s</span>)
+    </mat-list-item>
+  </mat-list>
 
   <div *ngIf="room.status == 'waiting'">
     <button mat-raised-button color="primary" *ngIf="!accessToken" class="btn" (click)="spotifyService.spotifyConnect()">Spotify Connect</button>
-    <br>
-    <button mat-raised-button color="primary" [disabled]="room.players.length <= 1" class="btn" (click)="startGame()">START</button>
+    <button mat-raised-button color="primary" *ngIf="accessToken" [disabled]="room.players.length <= 1 && !accessToken" class="btn" (click)="startGame()">START</button>
   </div>
 
-  <button mat-raised-button color="primary" *ngIf="room.status == 'playing'" [disabled]="room.isBuzzable" class="btn" (click)="nextSong()">Next Song</button>
+  <div *ngIf="room.status == 'playing'">
+    <button mat-raised-button class="mini-btn" color="accent" [disabled]="room.isBuzzable" (click)="answerIsCorrect()">Correct</button>
+    <button mat-raised-button class="mini-btn" color="warn" [disabled]="room.isBuzzable" (click)="answerIsWrong()">Wrong</button>
+  </div>
+
 </section>

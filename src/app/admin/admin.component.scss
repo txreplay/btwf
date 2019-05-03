@@ -4,5 +4,11 @@ section {
   button {
     margin: 10px auto;
     height: 25vh;
+
+    &.mini-btn {
+      height: 45px;
+      line-height: 45px;
+      margin: 0 15px;
+    }
   }
 }

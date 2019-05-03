@@ -44,11 +44,13 @@ export class PouchdbService {
   }
 
   async createRoom(username: string) {
+    console.log('createRoom');
     const doc = {
       _id: PouchdbService.generateId(),
       admin: username,
       status: 'waiting',
       isBuzzable: false,
+      lastBuzzer: '',
       players: []
     };
 
@@ -76,7 +78,7 @@ export class PouchdbService {
       const self = this;
 
       this.localDb.get(roomName).then((doc) => {
-        doc.players.push(username);
+        doc.players.push(username + '#0');
 
         return self.localDb.put({
           _id: roomName,
@@ -84,6 +86,7 @@ export class PouchdbService {
           admin: doc.admin,
           status: doc.status,
           isBuzzable: doc.isBuzzable,
+          lastBuzzer: doc.lastBuzzer,
           players: doc.players
         });
       }).then((response) => {
@@ -94,12 +97,26 @@ export class PouchdbService {
     });
   }
 
-  changeBuzzabilityStatus(isBuzzable: boolean, roomName: string) {
+  addPointToPlayer(lastBuzzer: string, roomName: string) {
     return new Promise((resolve, reject) => {
       const self = this;
 
       this.localDb.get(roomName).then((doc) => {
-        doc.isBuzzable = isBuzzable;
+        for (const item of doc.players) {
+          const playerScoreSplit = item.split('#');
+          const playerName = playerScoreSplit[0];
+
+          if (lastBuzzer === playerName) {
+            console.log({item});
+            const newScore = parseInt(playerScoreSplit[1], 10) + 1;
+            console.log({newScore});
+            const index = doc.players.indexOf(item);
+            doc.players.splice(index, 1);
+            doc.players.push(playerName + '#' + newScore);
+            break;
+          }
+        }
+
 
         return self.localDb.put({
           _id: roomName,
@@ -107,6 +124,34 @@ export class PouchdbService {
           admin: doc.admin,
           status: doc.status,
           isBuzzable: doc.isBuzzable,
+          lastBuzzer: doc.lastBuzzer,
+          players: doc.players
+        });
+      }).then((response) => {
+        resolve(response);
+      }).catch((err) => {
+        reject(err);
+      });
+    });
+  }
+
+  changeBuzzabilityStatus(isBuzzable: boolean, username: string, roomName: string) {
+    return new Promise((resolve, reject) => {
+      const self = this;
+
+      this.localDb.get(roomName).then((doc) => {
+        doc.isBuzzable = isBuzzable;
+        if (!isBuzzable) {
+          doc.lastBuzzer = username;
+        }
+
+        return self.localDb.put({
+          _id: roomName,
+          _rev: doc._rev,
+          admin: doc.admin,
+          status: doc.status,
+          isBuzzable: doc.isBuzzable,
+          lastBuzzer: doc.lastBuzzer,
           players: doc.players
         });
       }).then((response) => {
@@ -130,6 +175,7 @@ export class PouchdbService {
           admin: doc.admin,
           status: doc.status,
           isBuzzable: doc.isBuzzable,
+          lastBuzzer: doc.lastBuzzer,
           players: doc.players
         });
       }).then((response) => {

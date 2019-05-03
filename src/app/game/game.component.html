@@ -1,7 +1,11 @@
 <section class="user" *ngIf="room">
-  <p>id : {{room._id}}</p>
-  <p>status : {{room.status}}</p>
-  <p>nb players : {{room.players.length}}</p>
+  <p>ID du salon : {{room._id}}</p>
+
+  <mat-list *ngIf="room && room.players.length > 0">
+    <mat-list-item *ngFor="let player of leaderboard; let i = index">
+      #{{i+1}} - {{player.name}} ({{player.score}} point<span *ngIf="player.score > 1">s</span>)
+    </mat-list-item>
+  </mat-list>
 
   <div>
     <button mat-raised-button color="primary" [disabled]="!room.isBuzzable" class="btn" (click)="buzz()">BUZZER</button>

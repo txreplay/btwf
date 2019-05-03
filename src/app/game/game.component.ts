@@ -13,6 +13,7 @@ export class GameComponent implements OnInit {
   public roomName: any;
   public room: any;
   public user: any;
+  public leaderboard: Array<any> = [];
 
   constructor(
     private route: ActivatedRoute,
@@ -27,10 +28,20 @@ export class GameComponent implements OnInit {
   async ngOnInit() {
     this.room = await this.pouchdb.getPouchdbDoc(this.roomName);
     this.user = await this.pouchdb.getUser();
+    this.updateLeaderboard();
   }
 
   async buzz() {
-    await this.pouchdb.changeBuzzabilityStatus(false, this.roomName);
+    await this.pouchdb.changeBuzzabilityStatus(false, this.user.username, this.roomName);
+  }
+
+  updateLeaderboard() {
+    this.leaderboard = [];
+    this.room.players.map((player) => {
+      const playerArr = player.split('#');
+      this.leaderboard.push({name: playerArr[0], score: playerArr[1]});
+    });
+    this.leaderboard.sort((a, b) => b.score - a.score);
   }
 
   pouchDbSync() {
@@ -38,6 +49,7 @@ export class GameComponent implements OnInit {
       this.zone.run(() => {
         console.log('--- SYNC --- ');
         this.room = sync.change.docs[0];
+        this.updateLeaderboard();
       });
     }).on('error', (err) => {
       console.error(err);
