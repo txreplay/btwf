@@ -1,7 +1,7 @@
 <div class="container">
   <section class="choice" *ngIf="!action">
-    <button mat-raised-button class="btn" color="primary" (click)="setAction('create')">Créer une partie</button>
-    <button mat-raised-button class="btn" color="warn" (click)="setAction('join')">Rejoindre une partie</button>
+    <button mat-raised-button class="btn" color="accent" (click)="setAction('create')">Créer une partie</button>
+    <button mat-raised-button class="btn" color="primary" (click)="setAction('join')">Rejoindre une partie</button>
   </section>
 
   <section class="createRoom" *ngIf="action == 'create'">
