@@ -118,6 +118,8 @@ export class PouchdbService {
       dateNow.setHours(dateNow.getHours() - 3);
       if (room.status === 'done' || createdRoom < dateNow) {
         resolve(this.localDb.remove(room));
+      } else {
+        resolve();
       }
     });
   }
