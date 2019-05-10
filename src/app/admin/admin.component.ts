@@ -102,15 +102,17 @@ export class AdminComponent implements OnInit {
       await this.zone.run(async () => {
         console.log('--- SYNC --- ');
         const room: any = sync.change.docs[0];
-        this.room = room;
-        this.updateLeaderboard();
-        const accessToken = await this.ngf.getItem('accessToken');
+        if (room._id === this.room._id) {
+          this.room = room;
+          this.updateLeaderboard();
+          const accessToken = await this.ngf.getItem('accessToken');
 
-        if (accessToken) {
-          try {
-            (room.isBuzzable) ? await this.spotifyService.apiPlaySpotify(accessToken) : await this.spotifyService.apiPauseSpotify(accessToken);
-          } catch (e) {
-            console.error(e);
+          if (accessToken) {
+            try {
+              (room.isBuzzable) ? await this.spotifyService.apiPlaySpotify(accessToken) : await this.spotifyService.apiPauseSpotify(accessToken);
+            } catch (e) {
+              console.error(e);
+            }
           }
         }
       });

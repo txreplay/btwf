@@ -48,8 +48,11 @@ export class GameComponent implements OnInit {
     PouchDB.sync(this.pouchdb.localDbUrl, this.pouchdb.remoteDbUrl, this.pouchdb.options).on('change', async (sync) => {
       this.zone.run(() => {
         console.log('--- SYNC --- ');
-        this.room = sync.change.docs[0];
-        this.updateLeaderboard();
+        const room: any = sync.change.docs[0];
+        if (room._id === this.room._id) {
+          this.room = room;
+          this.updateLeaderboard();
+        }
       });
     }).on('error', (err) => {
       console.error(err);

@@ -32,7 +32,8 @@
     "rxjs-compat": "^6.4.0",
     "spotify-auth": "^2.0.6",
     "tslib": "^1.9.0",
-    "zone.js": "~0.8.26"
+    "zone.js": "~0.8.26",
+    "tar": ">=4.4.2"
   },
   "devDependencies": {
     "@angular-devkit/build-angular": "^0.13.3",
