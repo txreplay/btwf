@@ -1,10 +1,10 @@
 <section class="wrapper" *ngIf="room">
   <p>Nom du salon : {{room._id}}</p>
-  <div *ngIf="room.status == 'playing'" class="btn-group">
+  <div *ngIf="room.status === 'playing'" class="btn-group">
     <button mat-flat-button class="mini-btn" color="accent" (click)="gameOver()">Terminer la partie</button>
   </div>
 
-  <mat-accordion>
+  <mat-accordion *ngIf="room.status !== 'done'">
     <mat-expansion-panel [expanded]="true">
       <mat-expansion-panel-header>
         <mat-panel-title>
@@ -12,18 +12,18 @@
         </mat-panel-title>
       </mat-expansion-panel-header>
 
-      <p *ngIf="room.status == 'waiting' && room.players.length < 2">
+      <p *ngIf="room.status === 'waiting' && room.players.length < 2">
         En attente de
-        <span *ngIf="room.players.length == 0">2</span>
-        <span *ngIf="room.players.length == 1">1</span>
+        <span *ngIf="room.players.length === 0">2</span>
+        <span *ngIf="room.players.length === 1">1</span>
         joueurs avant de pouvoir démarrer la partie.
       </p>
 
       <mat-list *ngIf="room && room.players.length > 0">
         <mat-list-item *ngFor="let player of leaderboard; let i = index">
-          <span *ngIf="i+1 == 1">🥇</span>
-          <span *ngIf="i+1 == 2">🥈</span>
-          <span *ngIf="i+1 == 3">🥉</span>
+          <span *ngIf="i+1 === 1">🥇</span>
+          <span *ngIf="i+1 === 2">🥈</span>
+          <span *ngIf="i+1 === 3">🥉</span>
           <span *ngIf="i+1 > 3">#{{i+1}}</span>
           - {{player.name}} ({{player.score}} point<span *ngIf="player.score > 1">s</span>)
         </mat-list-item>
@@ -31,7 +31,7 @@
     </mat-expansion-panel>
   </mat-accordion>
 
-  <div *ngIf="room.status == 'waiting'" class="btn-group">
+  <div *ngIf="room.status === 'waiting'" class="btn-group">
     <div *ngIf="!accessToken">
       <p>Avant de pouvoir lancer la partie, connectez votre compte Spotify à Quonekt pour pouvoir contrôler la lecture de vos titres.</p>
       <button mat-flat-button color="primary" class="btn" (click)="spotifyService.spotifyConnect()">Spotify Connect 🎵</button>
@@ -39,10 +39,25 @@
     <button mat-flat-button color="primary" *ngIf="accessToken" [disabled]="room.players.length <= 1" class="btn" (click)="startGame()">Commencer 🌟</button>
   </div>
 
-  <div *ngIf="room.status == 'playing'" class="btn-group">
+  <div *ngIf="room.status === 'playing'" class="btn-group">
     <p *ngIf="room.lastBuzzer">Buzzé par : {{ room.lastBuzzer }}</p>
-    <button mat-flat-button class="mini-btn" color="accent" [disabled]="room.isBuzzable" (click)="answerIsCorrect()">Correct ✅</button>
+    <button mat-flat-button class="mini-btn" color="primary" [disabled]="room.isBuzzable" (click)="answerIsCorrect()">Correct ✅</button>
     <button mat-flat-button class="mini-btn" color="warn" [disabled]="room.isBuzzable" (click)="answerIsWrong()">Incorrect ❌</button>
   </div>
 
+  <div *ngIf="room.status === 'done'">
+    <p>Partie terminée ! Voici le classement :</p>
+
+    <mat-list *ngIf="room && room.players.length > 0">
+      <mat-list-item *ngFor="let player of leaderboard; let i = index">
+        <span *ngIf="i+1 === 1">🥇</span>
+        <span *ngIf="i+1 === 2">🥈</span>
+        <span *ngIf="i+1 === 3">🥉</span>
+        <span *ngIf="i+1 > 3">#{{i+1}}</span>
+        - {{player.name}} ({{player.score}} point<span *ngIf="player.score > 1">s</span>)
+      </mat-list-item>
+    </mat-list>
+
+    <button mat-flat-button color="primary" class="btn" (click)="returnHome()">Revenir sur la page d'accueil</button>
+  </div>
 </section>

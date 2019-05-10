@@ -4,7 +4,7 @@
     <button mat-flat-button class="btn" color="warn" (click)="setAction('join')">Rejoindre une partie</button>
   </section>
 
-  <section class="createRoom" *ngIf="action == 'create'">
+  <section class="createRoom" *ngIf="action === 'create'">
     <form [formGroup]="formCreateRoom" (ngSubmit)="onSubmitCreateRoom()">
       <mat-form-field>
         <mat-label>Votre pseudo</mat-label>
@@ -17,7 +17,7 @@
     </form>
   </section>
 
-  <section class="joinRoom" *ngIf="action == 'join'">
+  <section class="joinRoom" *ngIf="action === 'join'">
     <!-- GET ROOM -->
     <form [formGroup]="formGetRoom" (ngSubmit)="onSubmitGetRoom()" *ngIf="!roomName">
       <mat-form-field>

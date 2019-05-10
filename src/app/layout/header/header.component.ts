@@ -13,8 +13,12 @@ export class HeaderComponent {
   }
 
   async reset() {
-    await this.ngf.clear();
-    await this.router.navigate(['/']);
-    location.reload();
+    const r = confirm('Ceci mettra fin à la partie, êtes-vous sûr ?');
+
+    if (r) {
+      await this.ngf.clear();
+      await this.router.navigate(['/']);
+      location.reload();
+    }
   }
 }

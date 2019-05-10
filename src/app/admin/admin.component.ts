@@ -76,8 +76,16 @@ export class AdminComponent implements OnInit {
   }
 
   async gameOver() {
-    await this.pouchdb.changeRoomStatus('done', this.roomName);
+    const r = confirm('Ceci mettra fin à la partie, êtes-vous sûr ?');
 
+    if (r) {
+      await this.pouchdb.changeRoomStatus('done', this.roomName);
+    }
+  }
+
+  async returnHome() {
+    await this.ngf.clear();
+    await this.router.navigate(['/']);
   }
 
   updateLeaderboard() {
