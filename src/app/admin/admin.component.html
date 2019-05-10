@@ -1,21 +1,35 @@
-<section class="admin" *ngIf="room">
-  <p>ID du salon : {{room._id}}</p>
+<section class="wrapper" *ngIf="room">
+  <p>Nom du salon : {{room._id}}</p>
 
-  <mat-list *ngIf="room && room.players.length > 0">
-    <mat-list-item *ngFor="let player of leaderboard; let i = index">
-      #{{i+1}} - {{player.name}} ({{player.score}} point<span *ngIf="player.score > 1">s</span>)
-    </mat-list-item>
-  </mat-list>
+  <mat-accordion>
+    <mat-expansion-panel>
+      <mat-expansion-panel-header>
+        <mat-panel-title>
+          Classement
+        </mat-panel-title>
+      </mat-expansion-panel-header>
 
-  <div *ngIf="room.status == 'waiting'">
-    <button mat-raised-button color="primary" *ngIf="!accessToken" class="btn" (click)="spotifyService.spotifyConnect()">Spotify Connect</button>
-    <button mat-raised-button color="primary" *ngIf="accessToken" [disabled]="room.players.length <= 1" class="btn" (click)="startGame()">START</button>
+      <mat-list *ngIf="room && room.players.length > 0">
+        <mat-list-item *ngFor="let player of leaderboard; let i = index">
+          <span *ngIf="i+1 == 1">🥇</span>
+          <span *ngIf="i+1 == 2">🥈</span>
+          <span *ngIf="i+1 == 3">🥉</span>
+          <span *ngIf="i+1 > 3">#{{i+1}}</span>
+          - {{player.name}} ({{player.score}} point<span *ngIf="player.score > 1">s</span>)
+        </mat-list-item>
+      </mat-list>
+    </mat-expansion-panel>
+  </mat-accordion>
+
+  <div *ngIf="room.status == 'waiting'" class="btn-group">
+    <button mat-flat-button color="primary" *ngIf="!accessToken" class="btn" (click)="spotifyService.spotifyConnect()">Spotify Connect 🎵</button>
+    <button mat-flat-button color="primary" *ngIf="accessToken" [disabled]="room.players.length <= 1" class="btn" (click)="startGame()">Commencer 🌟</button>
   </div>
 
-  <div *ngIf="room.status == 'playing'">
+  <div *ngIf="room.status == 'playing'" class="btn-group">
     <p *ngIf="room.lastBuzzer">Buzzé par : {{ room.lastBuzzer }}</p>
-    <button mat-raised-button class="mini-btn" color="accent" [disabled]="room.isBuzzable" (click)="answerIsCorrect()">Correct</button>
-    <button mat-raised-button class="mini-btn" color="warn" [disabled]="room.isBuzzable" (click)="answerIsWrong()">Wrong</button>
+    <button mat-flat-button class="mini-btn" color="accent" [disabled]="room.isBuzzable" (click)="answerIsCorrect()">Correct ✅</button>
+    <button mat-flat-button class="mini-btn" color="warn" [disabled]="room.isBuzzable" (click)="answerIsWrong()">Incorrect ❌</button>
   </div>
 
 </section>

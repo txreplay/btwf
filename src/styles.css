@@ -4,7 +4,7 @@ html, body { height: 100%; }
 body {
   margin: 0;
   font-family: Roboto, "Helvetica Neue", sans-serif;
-  background: #424242cc;
+  background: #424242;
   color: white;
 }
 
@@ -12,13 +12,19 @@ body {
   height: 100vh;
   max-width: 800px;
   margin: 0 auto;
-  background: #424242;
+  background: #303030;
 }
 
-.container {
-  height: 100%;
-  padding: 15px 15px 0 15px;
+.wrapper {
   text-align: center;
+  margin: 20px auto 0 auto;
+  height: calc(100% - 60px - 20px);
+  width: 90%;
+}
+
+.btn {
+  width: 90%;
+  height: 75px;
 }
 
 mat-form-field, .btn {

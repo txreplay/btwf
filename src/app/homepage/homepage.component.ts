@@ -15,7 +15,7 @@ export class HomepageComponent implements OnInit {
   public error: string;
 
   public roomName: string;
-  public user: {};
+  public user: any;
 
   private formCreateRoom: FormGroup;
   private formGetRoom: FormGroup;
@@ -60,7 +60,6 @@ export class HomepageComponent implements OnInit {
     if (roomName) {
       roomName = roomName.toUpperCase();
       await this.pouchdb.getPouchdbDoc(roomName).then(async (room: any) => {
-        console.log(room);
         if (room.status !== 'waiting') {
           this.error = 'Partie déjà commencée ou terminée';
         } else {
@@ -83,17 +82,17 @@ export class HomepageComponent implements OnInit {
 
       await this.router.navigate(['game', {id: this.roomName}]);
     } else {
-      this.error = 'Votre pseudo ne doit pas contenir le symbole "#"';
+      this.error = 'Votre pseudo ne peut pas contenir le symbole "#"';
     }
   }
 
   pouchDbSync() {
-    PouchDB.sync(this.pouchdb.localDbUrl, this.pouchdb.remoteDbUrl, {live: true, retry: true}).on('change', async (sync) => {
+    PouchDB.sync(this.pouchdb.localDbUrl, this.pouchdb.remoteDbUrl, {live: true, retry: true}).on('change', async () => {
       await this.zone.run(async () => {
         console.log('--- SYNC --- ');
       });
     }).on('error', (err) => {
-      console.log(err);
+      console.error(err);
     });
   }
 }

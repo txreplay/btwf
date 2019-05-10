@@ -21,18 +21,45 @@ export class PouchdbService {
     this.options = {live: true, retry: true};
   }
 
-  static generateId() {
-    const LETTERS: Array<string> = ['A', 'B', 'C', 'D', 'E', 'F', 'G', 'H', 'I', 'J', 'K', 'L', 'M', 'N', 'P', 'Q', 'R', 'S', 'T', 'U', 'V', 'W', 'X', 'Y', 'Z'];
-    const roomNameLength = 5;
+  static getAnimal() {
+    const ANIMALS: Array<string> = ['fourmi',
+      'abeille',
+      'chat',
+      'chien',
+      'poisson',
+      'singe',
+      'grenouille',
+      'gazelle',
+      'crabe',
+      'jaguar',
+      'lion',
+      'tigre',
+      'ours',
+      'serpent',
+      'loup',
+      'papillon',
+      'dauphin',
+      'aigle',
+      'oiseau',
+      'renard',
+      'panda',
+      'koala',
+      'hamster',
+      'lama',
+      'canard',
+      'loutre'];
+    return ANIMALS[Math.floor(Math.random() * ANIMALS.length)];
+  }
 
-    let roomName = '';
-    for (let i = 0; i < roomNameLength; i++) {
-      roomName = roomName + LETTERS[Math.floor(Math.random() * LETTERS.length)];
+  async generateId() {
+    const animal = PouchdbService.getAnimal();
+
+    try {
+      await this.getPouchdbDoc(animal);
+      await this.generateId();
+    } catch (e) {
+      return animal;
     }
-
-    // TODO : Check if ID doesn't already exist
-
-    return roomName;
   }
 
   async getPouchdbDoc(documentId: string) {
@@ -44,9 +71,10 @@ export class PouchdbService {
   }
 
   async createRoom(username: string) {
-    console.log('createRoom');
+    const roomName = await this.generateId();
+
     const doc = {
-      _id: PouchdbService.generateId(),
+      _id: roomName,
       admin: username,
       status: 'waiting',
       isBuzzable: false,
@@ -130,9 +158,7 @@ export class PouchdbService {
           const playerName = playerScoreSplit[0];
 
           if (lastBuzzer === playerName) {
-            console.log({item});
             const newScore = parseInt(playerScoreSplit[1], 10) + 1;
-            console.log({newScore});
             const index = doc.players.indexOf(item);
             doc.players.splice(index, 1);
             doc.players.push(playerName + '#' + newScore);

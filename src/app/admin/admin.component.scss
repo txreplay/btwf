@@ -1,13 +1,8 @@
-section {
-  text-align: center;
-  margin-top: 20px;
-  button {
-    margin: 10px auto;
-    height: 45px;
-    line-height: 45px;
-    width: 90%;
+.wrapper {
+  .btn-group {
+    margin-top: 20px;
 
-    &.mini-btn {
+    .mini-btn {
       width: auto;
       margin: 0 15px;
     }

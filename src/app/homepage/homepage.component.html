@@ -1,7 +1,7 @@
-<div class="container">
+<div class="wrapper">
   <section class="choice" *ngIf="!action">
-    <button mat-raised-button class="btn" color="accent" (click)="setAction('create')">Créer une partie</button>
-    <button mat-raised-button class="btn" color="primary" (click)="setAction('join')">Rejoindre une partie</button>
+    <button mat-flat-button class="btn" color="primary" (click)="setAction('create')">Créer une partie</button>
+    <button mat-flat-button class="btn" color="warn" (click)="setAction('join')">Rejoindre une partie</button>
   </section>
 
   <section class="createRoom" *ngIf="action == 'create'">
@@ -12,7 +12,7 @@
       </mat-form-field>
 
       <div class="form-group">
-        <button mat-raised-button color="primary" class="btn" [disabled]="!formCreateRoom.valid" type="submit">Créer</button>
+        <button mat-flat-button color="primary" class="btn" [disabled]="!formCreateRoom.valid" type="submit">Créer</button>
       </div>
     </form>
   </section>
@@ -21,12 +21,12 @@
     <!-- GET ROOM -->
     <form [formGroup]="formGetRoom" (ngSubmit)="onSubmitGetRoom()" *ngIf="!roomName">
       <mat-form-field>
-        <mat-label>ID du salon</mat-label>
+        <mat-label>Nom du salon</mat-label>
         <input matInput type="text" title="roomName" [formControl]="formGetRoom.controls['roomName']">
       </mat-form-field>
 
       <div class="form-group">
-        <button mat-raised-button color="primary" class="btn" [disabled]="!formGetRoom.valid" type="submit">Rejoindre</button>
+        <button mat-flat-button color="primary" class="btn" [disabled]="!formGetRoom.valid" type="submit">Rejoindre</button>
       </div>
     </form>
 
@@ -39,7 +39,7 @@
         </mat-form-field>
 
         <div class="form-group">
-          <button mat-raised-button color="primary" class="btn" [disabled]="!formJoinRoom.valid" type="submit">Rejoindre</button>
+          <button mat-flat-button color="primary" class="btn" [disabled]="!formJoinRoom.valid" type="submit">Rejoindre</button>
         </div>
       </form>
     </div>
