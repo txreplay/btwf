@@ -58,7 +58,7 @@ export class HomepageComponent implements OnInit {
     let roomName = this.formGetRoom.value.roomName;
 
     if (roomName) {
-      roomName = roomName.toUpperCase();
+      roomName = roomName.toLowerCase();
       await this.pouchdb.getPouchdbDoc(roomName).then(async (room: any) => {
         if (room.status !== 'waiting') {
           this.error = 'Partie déjà commencée ou terminée';
