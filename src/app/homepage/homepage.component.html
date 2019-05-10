@@ -5,6 +5,10 @@
   </section>
 
   <section class="createRoom" *ngIf="action === 'create'">
+    <p>
+      <strong>Créez</strong> une salon et transmettez son nom à vos amis pour qu'ils puissent vous rejoindre. Dès que 2 joueurs vous auront rejoins, vous pourrez débuter la partie ! Dès qu'une personne buzze, la chanson s'arrête automatiquement, à vous de décider si la réponse donnée à l'oral est correcte ou non. Si c'est le cas, la chanson suivante se lancera, sinon, la chanson reprendra jusqu'à ce que quelqu'un buzz à nouveau.
+
+    </p>
     <form [formGroup]="formCreateRoom" (ngSubmit)="onSubmitCreateRoom()">
       <mat-form-field>
         <mat-label>Votre pseudo</mat-label>
@@ -18,6 +22,10 @@
   </section>
 
   <section class="joinRoom" *ngIf="action === 'join'">
+    <p>
+      <strong>Rejoignez</strong> un salon grâce à son nom que l'on vous a communiqué, choisissez un pseudo et attendez que la partie débute. Ensuite, rien de plus simple, buzzez dès que vous pensez avoir reconnu une chanson.
+
+    </p>
     <!-- GET ROOM -->
     <form [formGroup]="formGetRoom" (ngSubmit)="onSubmitGetRoom()" *ngIf="!roomName">
       <mat-form-field>
