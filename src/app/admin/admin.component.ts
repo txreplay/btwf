@@ -75,6 +75,11 @@ export class AdminComponent implements OnInit {
     await this.spotifyService.apiPlaySpotify(this.accessToken);
   }
 
+  async gameOver() {
+    await this.pouchdb.changeRoomStatus('done', this.roomName);
+
+  }
+
   updateLeaderboard() {
     this.leaderboard = [];
     this.room.players.map((player) => {

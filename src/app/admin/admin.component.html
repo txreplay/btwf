@@ -1,13 +1,23 @@
 <section class="wrapper" *ngIf="room">
   <p>Nom du salon : {{room._id}}</p>
+  <div *ngIf="room.status == 'playing'" class="btn-group">
+    <button mat-flat-button class="mini-btn" color="accent" (click)="gameOver()">Terminer la partie</button>
+  </div>
 
   <mat-accordion>
-    <mat-expansion-panel>
+    <mat-expansion-panel [expanded]="true">
       <mat-expansion-panel-header>
         <mat-panel-title>
           Classement
         </mat-panel-title>
       </mat-expansion-panel-header>
+
+      <p *ngIf="room.status == 'waiting' && room.players.length < 2">
+        En attente de
+        <span *ngIf="room.players.length == 0">2</span>
+        <span *ngIf="room.players.length == 1">1</span>
+        joueurs avant de pouvoir démarrer la partie.
+      </p>
 
       <mat-list *ngIf="room && room.players.length > 0">
         <mat-list-item *ngFor="let player of leaderboard; let i = index">
@@ -22,7 +32,10 @@
   </mat-accordion>
 
   <div *ngIf="room.status == 'waiting'" class="btn-group">
-    <button mat-flat-button color="primary" *ngIf="!accessToken" class="btn" (click)="spotifyService.spotifyConnect()">Spotify Connect 🎵</button>
+    <div *ngIf="!accessToken">
+      <p>Avant de pouvoir lancer la partie, connectez votre compte Spotify à Quonekt pour pouvoir contrôler la lecture de vos titres.</p>
+      <button mat-flat-button color="primary" class="btn" (click)="spotifyService.spotifyConnect()">Spotify Connect 🎵</button>
+    </div>
     <button mat-flat-button color="primary" *ngIf="accessToken" [disabled]="room.players.length <= 1" class="btn" (click)="startGame()">Commencer 🌟</button>
   </div>
 

@@ -53,13 +53,22 @@ export class PouchdbService {
 
   async generateId() {
     const animal = PouchdbService.getAnimal();
+    await this.cleanRooms();
 
-    try {
-      await this.getPouchdbDoc(animal);
-      await this.generateId();
-    } catch (e) {
-      return animal;
-    }
+    return animal;
+  }
+
+  async cleanRooms() {
+    return new Promise( (resolve, reject) => {
+      this.localDb.allDocs({include_docs: true})
+        .then(async (pouchdbDocs) => {
+          for (const room of pouchdbDocs.rows) {
+            await this.removeRoom(room.doc);
+          }
+          resolve();
+        })
+        .catch(pouchdbError => reject(pouchdbError));
+    });
   }
 
   async getPouchdbDoc(documentId: string) {
@@ -79,7 +88,8 @@ export class PouchdbService {
       status: 'waiting',
       isBuzzable: false,
       lastBuzzer: '',
-      players: []
+      players: [],
+      createdAt: new Date()
     };
 
     await this.localDb.put(doc);
@@ -101,6 +111,17 @@ export class PouchdbService {
     return await this.ngf.getItem('user');
   }
 
+  removeRoom(room: any) {
+    return new Promise( (resolve, reject) => {
+      const createdRoom = new Date(room.createdAt);
+      const dateNow = new Date();
+      dateNow.setHours(dateNow.getHours() - 3);
+      if (room.status === 'done' || createdRoom < dateNow) {
+        resolve(this.localDb.remove(room));
+      }
+    });
+  }
+
   resetLastBuzzer(roomName: string) {
     return new Promise((resolve, reject) => {
       const self = this;
@@ -114,7 +135,8 @@ export class PouchdbService {
           status: doc.status,
           isBuzzable: doc.isBuzzable,
           lastBuzzer: '',
-          players: doc.players
+          players: doc.players,
+          createdAt: doc.createdAt
         });
       }).then((response) => {
         resolve(response);
@@ -138,7 +160,8 @@ export class PouchdbService {
           status: doc.status,
           isBuzzable: doc.isBuzzable,
           lastBuzzer: doc.lastBuzzer,
-          players: doc.players
+          players: doc.players,
+          createdAt: doc.createdAt
         });
       }).then((response) => {
         resolve(response);
@@ -174,7 +197,8 @@ export class PouchdbService {
           status: doc.status,
           isBuzzable: doc.isBuzzable,
           lastBuzzer: doc.lastBuzzer,
-          players: doc.players
+          players: doc.players,
+          createdAt: doc.createdAt
         });
       }).then((response) => {
         resolve(response);
@@ -201,7 +225,8 @@ export class PouchdbService {
           status: doc.status,
           isBuzzable: doc.isBuzzable,
           lastBuzzer: doc.lastBuzzer,
-          players: doc.players
+          players: doc.players,
+          createdAt: doc.createdAt
         });
       }).then((response) => {
         resolve(response);
@@ -225,7 +250,8 @@ export class PouchdbService {
           status: doc.status,
           isBuzzable: doc.isBuzzable,
           lastBuzzer: doc.lastBuzzer,
-          players: doc.players
+          players: doc.players,
+          createdAt: doc.createdAt
         });
       }).then((response) => {
         resolve(response);
