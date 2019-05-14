@@ -79,6 +79,7 @@ export class AdminComponent implements OnInit {
     const r = confirm('Ceci mettra fin à la partie, êtes-vous sûr ?');
 
     if (r) {
+      await this.spotifyService.apiPauseSpotify(this.accessToken);
       await this.pouchdb.changeRoomStatus('done', this.roomName);
     }
   }
