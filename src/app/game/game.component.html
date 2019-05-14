@@ -21,9 +21,10 @@
     </mat-expansion-panel>
   </mat-accordion>
 
+  <p *ngIf="room.status !== 'waiting'">En attente du lancement de la partie par l'admin</p>
   <button mat-flat-button color="primary" [disabled]="!room.isBuzzable" class="buzzer" (click)="buzz()">🚨🚨🚨</button>
 </section>
 
-<section class="wrapper" *ngIf="room && room.status !== 'done'">
+<section class="wrapper" *ngIf="room && room.status === 'done'">
   Partie terminée !
 </section>
