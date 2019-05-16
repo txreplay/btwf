@@ -110,13 +110,11 @@ export class PouchdbService {
       chenille: '🐛',
       papillon: '🦋',
       coquillage: '🐚',
-      cochon: '🐖',
       lama: '🦙',
       dinde: '🦃',
       paon: '🦚',
       perroquet: '🦜',
       cygne: '🦢',
-      lapin: '🐇',
       blaireau: '🦡',
       rat: '🐀',
       dragon: '🐉'

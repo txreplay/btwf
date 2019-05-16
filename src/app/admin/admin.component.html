@@ -1,5 +1,5 @@
 <section class="wrapper" *ngIf="room">
-  <p>Invitez vos amis à rejoindre le salon : <br> <strong>{{emoji + '&nbsp;' + room._id + ' &nbsp;' + emoji}}</strong></p>
+  <p *ngIf="room.status !== 'done'">Invitez vos amis à rejoindre le salon : <br> <strong>{{emoji + '&nbsp;' + room._id + ' &nbsp;' + emoji}}</strong></p>
 
   <mat-accordion *ngIf="room.status !== 'done'">
     <mat-expansion-panel [expanded]="true">
