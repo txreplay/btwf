@@ -22,33 +22,107 @@ export class PouchdbService {
   }
 
   static getAnimal() {
-    const ANIMALS: Array<string> = ['fourmi',
-      'abeille',
-      'chat',
+    const ANIMALS: Array<string> = [
       'chien',
-      'poisson',
-      'singe',
-      'grenouille',
-      'gazelle',
-      'crabe',
-      'jaguar',
-      'lion',
-      'tigre',
-      'ours',
-      'serpent',
-      'loup',
-      'papillon',
-      'dauphin',
-      'aigle',
-      'oiseau',
+      'hamster',
+      'lapin',
       'renard',
+      'ours',
       'panda',
       'koala',
-      'hamster',
+      'tigre',
+      'lion',
+      'cochon',
+      'grenouille',
+      'singe',
+      'poule',
+      'pingouin',
+      'oiseau',
+      'poussin',
+      'hibou',
+      'loup',
+      'licorne',
+      'cheval',
+      'coccinelle',
+      'moustique',
+      'araignée',
+      'tortue',
+      'serpent',
+      'scorpion',
+      'crabe',
+      'pieuvre',
+      'homard',
+      'poisson',
+      'dauphin',
+      'baleine',
+      'abeille',
+      'chenille',
+      'papillon',
+      'coquillage',
+      'cochon',
       'lama',
-      'canard',
-      'loutre'];
+      'dinde',
+      'paon',
+      'perroquet',
+      'cygne',
+      'lapin',
+      'blaireau',
+      'rat',
+      'dragon',
+    ];
     return ANIMALS[Math.floor(Math.random() * ANIMALS.length)];
+  }
+
+  getEmojiFromAnimal(animal) {
+    const emojis = {
+      chien: '🐶',
+      hamster: '🐹',
+      lapin: '🐰',
+      renard: '🦊',
+      ours: '🐻',
+      panda: '🐼',
+      koala: '🐨',
+      tigre: '🐯',
+      lion: '🦁',
+      cochon: '🐷',
+      grenouille: '🐸',
+      singe: '🐵',
+      poule: '🐔',
+      pingouin: '🐧',
+      oiseau: '🐦',
+      poussin: '🐥',
+      hibou: '🦉',
+      loup: '🐺',
+      licorne: '🦄',
+      cheval: '🐴',
+      coccinelle: '🐞',
+      moustique: '🦟',
+      tortue: '🐢',
+      serpent: '🐍',
+      scorpion: '🦂',
+      crabe: '🦀',
+      pieuvre: '🐙',
+      homard: '🦞',
+      poisson: '🐟',
+      dauphin: '🐬',
+      baleine: '🐋',
+      abeille: '🐝',
+      chenille: '🐛',
+      papillon: '🦋',
+      coquillage: '🐚',
+      cochon: '🐖',
+      lama: '🦙',
+      dinde: '🦃',
+      paon: '🦚',
+      perroquet: '🦜',
+      cygne: '🦢',
+      lapin: '🐇',
+      blaireau: '🦡',
+      rat: '🐀',
+      dragon: '🐉'
+    };
+
+    return emojis[animal] + emojis[animal];
   }
 
   async generateId() {
@@ -173,7 +247,7 @@ export class PouchdbService {
     });
   }
 
-  addPointToPlayer(lastBuzzer: string, roomName: string) {
+  addPointToPlayer(nbPoints: number, lastBuzzer: string, roomName: string) {
     return new Promise((resolve, reject) => {
       const self = this;
 
@@ -183,7 +257,7 @@ export class PouchdbService {
           const playerName = playerScoreSplit[0];
 
           if (lastBuzzer === playerName) {
-            const newScore = parseInt(playerScoreSplit[1], 10) + 1;
+            const newScore = parseInt(playerScoreSplit[1], 10) + nbPoints;
             const index = doc.players.indexOf(item);
             doc.players.splice(index, 1);
             doc.players.push(playerName + '#' + newScore);

@@ -1,5 +1,5 @@
 <section class="wrapper" *ngIf="room && room.status !== 'done'">
-  <p>Nom du salon : {{room._id}}</p>
+  <p>Vous avez rejoins le salon : <br> <strong>{{emoji + '&nbsp;' + room._id + ' &nbsp;' + emoji}}</strong></p>
 
   <mat-accordion>
     <mat-expansion-panel>
@@ -21,7 +21,8 @@
     </mat-expansion-panel>
   </mat-accordion>
 
-  <p *ngIf="room.status !== 'waiting'">En attente du lancement de la partie par l'admin</p>
+  <p *ngIf="room.status === 'waiting'" class="waitingStart">⌛ En attente du lancement de la partie par l'admin</p>
+  <p *ngIf="user && room.lastBuzzer === user.username">🎉🎉 Vous avez été le premier a buzzer ! 🎉🎉</p>
   <button mat-flat-button color="primary" [disabled]="!room.isBuzzable" class="buzzer" (click)="buzz()">🚨🚨🚨</button>
 </section>
 

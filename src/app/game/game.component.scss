@@ -1,4 +1,13 @@
 .wrapper {
+  strong {
+    font-weight: bold;
+    text-transform: capitalize;
+  }
+
+  .waitingStart {
+    font-style: italic;
+  }
+
   .buzzer {
     margin-top: 15px;
     width: 100%;

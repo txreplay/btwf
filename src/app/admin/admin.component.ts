@@ -17,6 +17,8 @@ export class AdminComponent implements OnInit {
   public room: any;
   public user: any;
   public leaderboard: Array<any> = [];
+  public currentlyPlaying: any;
+  public emoji: string;
 
   public accessToken: string;
 
@@ -48,6 +50,7 @@ export class AdminComponent implements OnInit {
       this.roomName = this.user.room;
     }
 
+    this.emoji = this.pouchdb.getEmojiFromAnimal(this.roomName);
     this.room = await this.pouchdb.getPouchdbDoc(this.roomName);
     this.user = await this.pouchdb.getUser();
     this.updateLeaderboard();
@@ -59,14 +62,19 @@ export class AdminComponent implements OnInit {
     await this.spotifyService.apiPlaySpotify(this.accessToken);
   }
 
-  async answerIsCorrect() {
+  async answerIsCorrect(nbPoints) {
     if (this.room.lastBuzzer) {
-      await this.pouchdb.addPointToPlayer(this.room.lastBuzzer, this.roomName);
+      await this.pouchdb.addPointToPlayer(nbPoints, this.room.lastBuzzer, this.roomName);
     }
 
     await this.pouchdb.resetLastBuzzer(this.roomName);
     await this.pouchdb.changeBuzzabilityStatus(true, this.user.username, this.roomName);
     await this.spotifyService.apiNextSpotify(this.accessToken);
+  }
+
+  async passSong() {
+    await this.spotifyService.apiNextSpotify(this.accessToken);
+    this.getCurrentlyPlaying();
   }
 
   async answerIsWrong() {
@@ -98,6 +106,13 @@ export class AdminComponent implements OnInit {
     this.leaderboard.sort((a, b) => b.score - a.score);
   }
 
+  getCurrentlyPlaying() {
+    const self = this;
+    setTimeout(async () => {
+      self.currentlyPlaying = await self.spotifyService.apiCurrentlyPlaying(self.accessToken);
+    }, 500);
+  }
+
   pouchDbSync() {
     PouchDB.sync(this.pouchdb.localDbUrl, this.pouchdb.remoteDbUrl, {live: true, retry: true}).on('change', async (sync) => {
       await this.zone.run(async () => {
@@ -111,6 +126,7 @@ export class AdminComponent implements OnInit {
           if (accessToken) {
             try {
               (room.isBuzzable) ? await this.spotifyService.apiPlaySpotify(accessToken) : await this.spotifyService.apiPauseSpotify(accessToken);
+              this.getCurrentlyPlaying();
             } catch (e) {
               console.error(e);
             }

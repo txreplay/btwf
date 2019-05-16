@@ -60,8 +60,11 @@ export class SpotifyService {
       .toPromise();
   }
 
-  checkTokenValidity() {
-
+  apiCurrentlyPlaying(token) {
+    return this.http
+      .get(`${this.apiURL}/me/player/currently-playing`, SpotifyService.httpHeaders(token))
+      .pipe(map((res: any) => res))
+      .toPromise();
   }
 
   search(query, token) {

@@ -1,8 +1,5 @@
 <section class="wrapper" *ngIf="room">
-  <p>Nom du salon : {{room._id}}</p>
-  <div *ngIf="room.status === 'playing'" class="btn-group">
-    <button mat-flat-button class="mini-btn" color="accent" (click)="gameOver()">Terminer la partie</button>
-  </div>
+  <p>Invitez vos amis à rejoindre le salon : <br> <strong>{{emoji + '&nbsp;' + room._id + ' &nbsp;' + emoji}}</strong></p>
 
   <mat-accordion *ngIf="room.status !== 'done'">
     <mat-expansion-panel [expanded]="true">
@@ -31,7 +28,7 @@
     </mat-expansion-panel>
   </mat-accordion>
 
-  <div *ngIf="room.status === 'waiting'" class="btn-group">
+  <div *ngIf="room.status === 'waiting'" class="btns btn-group">
     <div *ngIf="!accessToken">
       <p>Avant de pouvoir lancer la partie, connectez votre compte Spotify à Quonekt pour pouvoir contrôler la lecture de vos titres.</p>
       <button mat-flat-button color="primary" class="btn" (click)="spotifyService.spotifyConnect()">Spotify Connect 🎵</button>
@@ -39,10 +36,17 @@
     <button mat-flat-button color="primary" *ngIf="accessToken" [disabled]="room.players.length <= 1" class="btn" (click)="startGame()">Commencer 🌟</button>
   </div>
 
-  <div *ngIf="room.status === 'playing'" class="btn-group">
-    <p *ngIf="room.lastBuzzer">Buzzé par : {{ room.lastBuzzer }}</p>
-    <button mat-flat-button class="mini-btn" color="primary" [disabled]="room.isBuzzable" (click)="answerIsCorrect()">Correct ✅</button>
-    <button mat-flat-button class="mini-btn" color="warn" [disabled]="room.isBuzzable" (click)="answerIsWrong()">Incorrect ❌</button>
+  <div *ngIf="room.status === 'playing'" class="btns">
+    <p *ngIf="currentlyPlaying" class="currentlyPlaying">{{ currentlyPlaying.item.name }} - {{ currentlyPlaying.item.artists[0].name }}</p>
+    <p *ngIf="room.lastBuzzer">🚨🚨 {{ room.lastBuzzer }} 🚨🚨</p>
+    <div class="btn-group">
+      <button mat-flat-button class="mini-btn" color="primary" [disabled]="room.isBuzzable" (click)="answerIsCorrect(1)">Correct +1 ✅</button>
+      <button mat-flat-button class="mini-btn" color="primary" [disabled]="room.isBuzzable" (click)="answerIsCorrect(2)">Correct +2 ✅</button>
+      <button mat-flat-button class="mini-btn" color="primary" [disabled]="room.isBuzzable" (click)="answerIsCorrect(3)">Correct +3 ✅</button>
+      <button mat-flat-button class="mini-btn" color="warn" [disabled]="room.isBuzzable" (click)="answerIsWrong()">Incorrect ❌</button>
+      <button mat-flat-button class="mini-btn" color="warn" [disabled]="!room.isBuzzable" (click)="passSong()">Passer 🤷‍♂️</button>
+      <button mat-flat-button class="mini-btn" color="accent" (click)="gameOver()">Fini 🙅‍♂️️</button>
+    </div>
   </div>
 
   <div *ngIf="room.status === 'done'">

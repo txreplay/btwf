@@ -14,6 +14,7 @@ export class GameComponent implements OnInit {
   public room: any;
   public user: any;
   public leaderboard: Array<any> = [];
+  public emoji: string;
 
   constructor(
     private route: ActivatedRoute,
@@ -22,6 +23,7 @@ export class GameComponent implements OnInit {
     private zone: NgZone
   ) {
     this.roomName = this.route.snapshot.paramMap.get('id');
+    this.emoji = this.pouchdb.getEmojiFromAnimal(this.roomName);
     this.pouchDbSync();
   }
 
@@ -45,17 +47,22 @@ export class GameComponent implements OnInit {
   }
 
   pouchDbSync() {
-    PouchDB.sync(this.pouchdb.localDbUrl, this.pouchdb.remoteDbUrl, this.pouchdb.options).on('change', async (sync) => {
-      this.zone.run(() => {
-        console.log('--- SYNC --- ');
-        const room: any = sync.change.docs[0];
-        if (room._id === this.room._id) {
-          this.room = room;
-          this.updateLeaderboard();
-        }
+    try {
+      PouchDB.sync(this.pouchdb.localDbUrl, this.pouchdb.remoteDbUrl, this.pouchdb.options).on('change', async (sync) => {
+        this.zone.run(() => {
+          console.log('--- SYNC --- ');
+          const room: any = sync.change.docs[0];
+          if (room._id === this.room._id) {
+            this.room = room;
+            this.updateLeaderboard();
+          }
+        });
+      }).on('error', (err) => {
+        console.error(err);
+        this.pouchDbSync();
       });
-    }).on('error', (err) => {
-      console.error(err);
-    });
+    } catch (e) {
+      this.pouchDbSync();
+    }
   }
 }

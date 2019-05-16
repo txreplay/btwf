@@ -1,10 +1,28 @@
 .wrapper {
-  .btn-group {
+  strong {
+    font-weight: bold;
+    text-transform: capitalize;
+  }
+
+  .currentlyPlaying {
+    font-style: italic;
+  }
+
+  .btns {
     margin: 20px auto;
 
-    .mini-btn {
-      width: auto;
-      margin: 0 15px;
+    .btn-group {
+      flex-flow: row wrap;
+      box-sizing: border-box;
+      display: flex;
+      place-content: center center;
+      align-items: center;
+
+      .mini-btn {
+        width: auto;
+        margin: 5px 15px;
+        min-width: 120px;
+      }
     }
   }
 }
